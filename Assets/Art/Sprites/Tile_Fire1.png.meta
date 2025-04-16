@@ -1,10 +1,16 @@
 fileFormatVersion: 2
-guid: 50154d872d83ce5469fed5a717d5b4b4
+guid: 0ea231e8863d5b94481781e86128566a
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -1639979983016895484
-    second: cardBack_green2_0
+      213: -8111781794292553223
+    second: Tile_Fire1_0
+  - first:
+      213: -140219183392334327
+    second: Tile_Fire1_1
+  - first:
+      213: 8950280934943664877
+    second: Tile_Fire1_2
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -96,30 +102,17 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 4
-    buildTarget: WebGL
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
-    textureFormat: -1
-    textureCompression: 1
-    compressionQuality: 50
-    crunchedCompression: 0
-    allowsAlphaSplitting: 0
-    overridden: 0
-    ignorePlatformSupport: 0
-    androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: cardBack_green2_0
+      name: Tile_Fire1_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
-        width: 140
-        height: 190
+        x: 1
+        y: 17
+        width: 8
+        height: 40
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,8 +121,52 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 40cd689f4ee9d39e0800000000000000
-      internalID: -1639979983016895484
+      spriteID: 9f926b7af692d6f80800000000000000
+      internalID: -8111781794292553223
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tile_Fire1_1
+      rect:
+        serializedVersion: 2
+        x: 9
+        y: 19
+        width: 44
+        height: 45
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 90e54374567dd0ef0800000000000000
+      internalID: -140219183392334327
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tile_Fire1_2
+      rect:
+        serializedVersion: 2
+        x: 23
+        y: 15
+        width: 41
+        height: 49
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: deaa447f619c53c70800000000000000
+      internalID: 8950280934943664877
       vertices: []
       indices: 
       edges: []
@@ -147,8 +184,7 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable:
-      cardBack_green2_0: -1639979983016895484
+    nameFileIdTable: {}
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

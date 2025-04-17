@@ -16,4 +16,6 @@ public class CardViewHoverSystem : Singleton<CardViewHoverSystem>
     {
         cardViewHover.gameObject.SetActive(false);
     }
+    
+    
 }

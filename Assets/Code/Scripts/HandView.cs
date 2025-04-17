@@ -1,14 +1,21 @@
 using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Splines;
 
 public class HandView : MonoBehaviour
 {
     [SerializeField] private SplineContainer splineContainer;
+    [SerializeField] private int muxHandCard = 10 ;
     private readonly List<CardView> cards = new();
 
+    public bool IsHandFull()
+    {
+        return cards.Count >= muxHandCard;
+    }
+    
     public IEnumerator AddCard(CardView cardView)
     {
         cards.Add(cardView);

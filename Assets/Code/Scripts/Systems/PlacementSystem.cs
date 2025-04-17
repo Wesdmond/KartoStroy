@@ -39,7 +39,7 @@ public class PlacementSystem : MonoBehaviour
 
     private void Start()
     {
-        gridVisualization.SetActive(true);
+        gridVisualization.SetActive(false);
         floorData = new();
         furnitureData = new();
     }
@@ -47,6 +47,7 @@ public class PlacementSystem : MonoBehaviour
     public void StartPlacement(int ID)
     {
         StopPlacement();
+        print("Trying place");
         gridVisualization.SetActive(true);
         buildingState = new PlacementState(ID,
                                            grid,
@@ -54,8 +55,7 @@ public class PlacementSystem : MonoBehaviour
                                            database,
                                            floorData,
                                            furnitureData,
-                                           objectPlacer,
-                                           soundFeedback);
+                                           objectPlacer);
         inputManager.OnClicked += PlaceStructure;
         inputManager.OnExit += StopPlacement;
     }
@@ -63,7 +63,7 @@ public class PlacementSystem : MonoBehaviour
     public void StartRemoving()
     {
         StopPlacement();
-        gridVisualization.SetActive(true) ;
+        gridVisualization.SetActive(false) ;
         buildingState = new RemovingState(grid, preview, floorData, furnitureData, objectPlacer, soundFeedback);
         inputManager.OnClicked += PlaceStructure;
         inputManager.OnExit += StopPlacement;
@@ -73,6 +73,7 @@ public class PlacementSystem : MonoBehaviour
     {
         if(inputManager.IsPointerOverUI())
         {
+            print("Pointer over UI");
             return;
         }
         Vector3 mousePosition = inputManager.GetSelectedMapPosition();
@@ -93,10 +94,11 @@ public class PlacementSystem : MonoBehaviour
 
     private void StopPlacement()
     {
-        soundFeedback.PlaySound(SoundType.Click);
+        print("Trying stop placement");
+        // soundFeedback.PlaySound(SoundType.Click);
         if (buildingState == null)
             return;
-        gridVisualization.SetActive(true);
+        gridVisualization.SetActive(false);
         buildingState.EndState();
         inputManager.OnClicked -= PlaceStructure;
         inputManager.OnExit -= StopPlacement;

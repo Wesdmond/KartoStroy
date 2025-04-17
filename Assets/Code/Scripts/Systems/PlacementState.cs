@@ -21,8 +21,7 @@ public class PlacementState : IBuildingState
                           ObjectsDatabaseSO database,
                           GridData floorData,
                           GridData furnitureData,
-                          ObjectPlacer objectPlacer,
-                          SoundFeedback soundFeedback)
+                          ObjectPlacer objectPlacer)
     {
         ID = iD;
         this.grid = grid;
@@ -31,7 +30,7 @@ public class PlacementState : IBuildingState
         this.floorData = floorData;
         this.furnitureData = furnitureData;
         this.objectPlacer = objectPlacer;
-        this.soundFeedback = soundFeedback;
+        // this.soundFeedback = soundFeedback;
 
         selectedObjectIndex = database.objectsData.FindIndex(data => data.ID == ID);
         if (selectedObjectIndex > -1)
@@ -56,10 +55,10 @@ public class PlacementState : IBuildingState
         bool placementValidity = CheckPlacementValidity(gridPosition, selectedObjectIndex);
         if (placementValidity == false)
         {
-            soundFeedback.PlaySound(SoundType.wrongPlacement);
+            // soundFeedback.PlaySound(SoundType.wrongPlacement);
             return;
         }
-        soundFeedback.PlaySound(SoundType.Place);
+        // soundFeedback.PlaySound(SoundType.Place);
         int index = objectPlacer.PlaceObject(database.objectsData[selectedObjectIndex].Prefab,
             grid.CellToWorld(gridPosition));
 
@@ -90,4 +89,3 @@ public class PlacementState : IBuildingState
         previewSystem.UpdatePosition(grid.CellToWorld(gridPosition), placementValidity);
     }
 }
-

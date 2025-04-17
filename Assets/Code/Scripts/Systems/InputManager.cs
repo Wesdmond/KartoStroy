@@ -6,8 +6,8 @@ using UnityEngine.EventSystems;
 
 public class InputManager : MonoBehaviour
 {
-    [SerializeField]
-    private Camera sceneCamera;
+    [SerializeField] private Camera sceneCamera;
+    [SerializeField] private PlacementSystem placementSystem;
 
     private Vector3 lastPosition;
 
@@ -15,13 +15,36 @@ public class InputManager : MonoBehaviour
     private LayerMask placementLayermask;
 
     public event Action OnClicked, OnExit;
+    private int idForPlace = 0;
 
     private void Update()
     {
-        if(Input.GetMouseButtonDown(0))
+        var input = Input.inputString;
+        
+        if (!string.IsNullOrEmpty(input))
+        {
+            switch (input)
+            {
+                case "e": placementSystem.StartPlacement(0); break;
+                case "q": placementSystem.StartRemoving(); break;
+                case "1": ChangePlacementID(0); break;
+                case "2": ChangePlacementID(1); break;
+                case "3": ChangePlacementID(2); break;
+                case "4": ChangePlacementID(3); break;
+                case "R": break;
+            }
+        }
+
+        if (Input.GetMouseButtonDown(0))
+        {
             OnClicked?.Invoke();
-        if(Input.GetKeyDown(KeyCode.Escape))
+        }
+           
+        if (Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyUp(KeyCode.Tab))
+        {
             OnExit?.Invoke();
+        }
+        
     }
 
     public bool IsPointerOverUI()
@@ -38,5 +61,10 @@ public class InputManager : MonoBehaviour
             lastPosition = hit.point;
         }
         return lastPosition;
+    }
+
+    private void ChangePlacementID(int newID)
+    {
+        placementSystem.StartPlacement(newID);
     }
 }

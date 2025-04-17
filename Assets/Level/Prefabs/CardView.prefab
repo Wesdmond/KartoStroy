@@ -641,7 +641,7 @@ Transform:
   m_GameObject: {fileID: 8266344665653791151}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -0.85, y: 4.5, z: -1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -659,7 +659,7 @@ SortingGroup:
   m_Enabled: 1
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_SortAtRoot: 0
 --- !u!114 &4757125150613870052
 MonoBehaviour:
@@ -678,6 +678,7 @@ MonoBehaviour:
   energyCost: {fileID: 4707015730725383033}
   imageSR: {fileID: 3666398412519256448}
   wrapper: {fileID: 8336779201729806253}
+  isHoverCard: 0
 --- !u!61 &870638540407766705
 BoxCollider2D:
   m_ObjectHideFlags: 0

@@ -10,7 +10,7 @@ public class ShopSystem : MonoBehaviour
     public int price = 50;
     public int Cards;
 
-    public Text Coin_text;
+    public Text Coin_text;  
     public Text Cards_text;
     void Start()
     {

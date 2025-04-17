@@ -39,7 +39,7 @@ public class PlacementSystem : MonoBehaviour
 
     private void Start()
     {
-        gridVisualization.SetActive(false);
+        gridVisualization.SetActive(true);
         floorData = new();
         furnitureData = new();
     }
@@ -96,7 +96,7 @@ public class PlacementSystem : MonoBehaviour
         soundFeedback.PlaySound(SoundType.Click);
         if (buildingState == null)
             return;
-        gridVisualization.SetActive(false);
+        gridVisualization.SetActive(true);
         buildingState.EndState();
         inputManager.OnClicked -= PlaceStructure;
         inputManager.OnExit -= StopPlacement;

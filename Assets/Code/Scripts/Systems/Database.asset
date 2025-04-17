@@ -12,4 +12,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 93ddd73601030b14f9a657a5561d1017, type: 3}
   m_Name: Database
   m_EditorClassIdentifier: 
-  objectsData: []
+  objectsData:
+  - <Name>k__BackingField: Observatory
+    <ID>k__BackingField: 0
+    <Size>k__BackingField: {x: 0, y: 0}
+    <Prefab>k__BackingField: {fileID: 0}
+  - <Name>k__BackingField: House
+    <ID>k__BackingField: 1
+    <Size>k__BackingField: {x: 0, y: 0}
+    <Prefab>k__BackingField: {fileID: 0}
+  - <Name>k__BackingField: Forest
+    <ID>k__BackingField: 2
+    <Size>k__BackingField: {x: 0, y: 0}
+    <Prefab>k__BackingField: {fileID: 0}
+  - <Name>k__BackingField: Majory
+    <ID>k__BackingField: 3
+    <Size>k__BackingField: {x: 0, y: 0}
+    <Prefab>k__BackingField: {fileID: 0}

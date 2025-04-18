@@ -31,7 +31,7 @@ public class CardView : MonoBehaviour
 
     void OnMouseEnter()
     {
-        wrapper.SetActive(false);
+        // wrapper.SetActive(false);
         Vector3 pos = new(transform.position.x, -2, 0);
         CardViewHoverSystem.Instance.Show(Card, pos);
     }
@@ -39,7 +39,7 @@ public class CardView : MonoBehaviour
     void OnMouseExit()
     {
         CardViewHoverSystem.Instance.Hide();
-        wrapper.SetActive(true);
+        // wrapper.SetActive(true);
     }
 
     private void OnMouseDown()

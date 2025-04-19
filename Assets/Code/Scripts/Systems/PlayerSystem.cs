@@ -15,9 +15,16 @@ public class PlayerSystem : Singleton<PlayerSystem>
 
     public void Start()
     {
-        
+        EnergyText.SetText(Energy.ToString());
+        MoneyText.SetText(Money.ToString());
     }
-    
+
+    void Update()
+    {
+        Money++;
+        MoneyText.SetText(Money.ToString());
+    }
+
     public void ChangeEnergy(int amount, float delay = float.NaN)
     {
         if (float.IsNaN(delay)) delay = ChangingDelay;
@@ -29,7 +36,7 @@ public class PlayerSystem : Singleton<PlayerSystem>
     {
         if (float.IsNaN(delay)) delay = ChangingDelay;
         DOTween.To(() => Money, x => Money = x, amount, delay);
-        MoneyText.SetText(Money.ToString());
+        MoneyText.SetText(Money.ToString()); 
     }
 
     public int GetEnergy()

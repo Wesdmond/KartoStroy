@@ -1,5 +1,6 @@
 using System;
 using DG.Tweening;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,14 +10,14 @@ public class PlayerSystem : Singleton<PlayerSystem>
     [SerializeField] private int Money = 100;
     [SerializeField, Range(0.0f, 2.0f)] private float ChangingDelay = 1.0f;
 
-    [SerializeField] public Text MoneyText;
-    [SerializeField] public Text EnergyText;
+    [SerializeField] public TMP_Text MoneyText;
+    [SerializeField] public TMP_Text EnergyText;
 
     public void Start()
     {
         
     }
-
+    
     public void ChangeEnergy(int amount, float delay = float.NaN)
     {
         if (float.IsNaN(delay)) delay = ChangingDelay;

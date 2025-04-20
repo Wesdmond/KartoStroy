@@ -1,3 +1,4 @@
+using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
@@ -6,7 +7,7 @@ using System.Collections.Generic;
 using System.Collections;
 using UnityEngine.UI;
 
-    public static class ExtensionMethods
+public static class ExtensionMethods
     {
         public static float Remap(this float value, float from1, float to1, float from2, float to2)
         {
@@ -16,6 +17,7 @@ using UnityEngine.UI;
 
 public class CardView : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHandler, IPointerEnterHandler, IPointerExitHandler, IPointerUpHandler, IPointerDownHandler
 {
+    #region Old Realization
     [SerializeField] private TMP_Text title;
     [SerializeField] private TMP_Text description;
     [SerializeField] private TMP_Text energyCost;
@@ -26,7 +28,18 @@ public class CardView : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDrag
     private Vector3 startDragPosition;
     
     public Card Card { get; private set; }
-    //=====================================================
+    
+    public void Setup(Card card)
+    {
+        Card = card;
+        title.text = card.Title;
+        description.text = card.Descriptioon;
+        energyCost.text = card.Energy.ToString();
+        imageSR.sprite = card.Image;
+    }
+    
+    #endregion
+    
     private Canvas canvas;
     private Image imageComponent;
     [SerializeField] private bool instantiateVisual = true;
@@ -75,69 +88,30 @@ public class CardView : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDrag
         cardVisual.Initialize(this);
     }
     
-    public void Setup(Card card)
+    void Update()
     {
-        Card = card;
-        title.text = card.Title;
-        description.text = card.Descriptioon;
-        energyCost.text = card.Energy.ToString();
-        imageSR.sprite = card.Image;
-    }
-/*
-    void OnMouseEnter()
-    {
-        // wrapper.SetActive(false);
-        Vector3 pos = new(transform.position.x, -2, 0);
-        CardViewHoverSystem.Instance.Show(Card, pos);
-    }
-
-    void OnMouseExit()
-    {
-        CardViewHoverSystem.Instance.Hide();
-        // wrapper.SetActive(true);
-    }
-
-    private void OnMouseDown()
-    {
-        if (!isHoverCard) return;
-        startDragPosition = transform.position;
-        transform.position = GetMousePosition();
-    }
-
-    private void OnMouseDrag()
-    {
-        if (!isHoverCard) return;
-        transform.position = GetMousePosition();
-    }
-
-    private void OnMouseUp()
-    {
-        if (!isHoverCard) return;
-        col.enabled = false;
-        Collider2D hitCollider = Physics2D.OverlapPoint(transform.position);
-        col.enabled = true;
-        if (hitCollider != null && hitCollider.TryGetComponent(out CardView cardView))
+        ClampPosition();
+        print(transform.position);
+        if (isDragging)
         {
-            
-        }
-        else
-        {
-            transform.position = startDragPosition;
+            Vector2 targetPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition) - offset;
+            Vector2 direction = (targetPosition - (Vector2)transform.position).normalized;
+            Vector2 velocity = direction * Mathf.Min(moveSpeedLimit, Vector2.Distance(transform.position, targetPosition) / Time.deltaTime);
+            transform.Translate(velocity * Time.deltaTime);
         }
     }
 
-    public Vector3 GetMousePosition()
+    void ClampPosition()
     {
-        Vector3 p = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        p.z = 0f;
-        return p;
-    } */
-    //======================================
-
+        Vector2 screenBounds = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width, Screen.height, Camera.main.transform.position.z));
+        Vector3 clampedPosition = transform.position;
+        clampedPosition.x = Mathf.Clamp(clampedPosition.x, -screenBounds.x, screenBounds.x);
+        clampedPosition.y = Mathf.Clamp(clampedPosition.y, -screenBounds.y, screenBounds.y);
+        transform.position = new Vector3(clampedPosition.x, clampedPosition.y, 0);
+    }
 
     public void OnBeginDrag(PointerEventData eventData)
     {
-        print("chlen");
         BeginDragEvent.Invoke(this);
         Vector2 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         offset = mousePosition - (Vector2)transform.position;
@@ -148,8 +122,9 @@ public class CardView : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDrag
         wasDragged = true;
     }
 
-        public void OnDrag(PointerEventData eventData)
+    public void OnDrag(PointerEventData eventData)
     {
+        
     }
 
     public void OnEndDrag(PointerEventData eventData)
@@ -225,8 +200,6 @@ public class CardView : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDrag
         }
     }
 
-
-
     public int SiblingAmount()
     {
         return transform.parent.CompareTag("Slot") ? transform.parent.parent.childCount - 1 : 0;
@@ -245,6 +218,6 @@ public class CardView : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDrag
     private void OnDestroy()
     {
         if(cardVisual != null)
-        Destroy(cardVisual.gameObject);
+            Destroy(cardVisual.gameObject);
     }
 }

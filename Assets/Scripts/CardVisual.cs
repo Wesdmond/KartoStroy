@@ -84,8 +84,7 @@ public class CardVisual : MonoBehaviour
         System.Random rnd = new System.Random();
         int random = rnd.Next(0, 20);
         parentCard = target;
-        //description.SetText(target.description.text);
-        //energyCost.SetText(random.ToString());
+        imageSR.sprite = parentCard.imageSR;
 
         cardTransform = target.transform;
         canvas = GetComponent<Canvas>();

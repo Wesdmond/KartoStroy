@@ -21,7 +21,7 @@ public class CardView : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDrag
     [SerializeField] public string title;
     [SerializeField] public string description;
     [SerializeField] public string energyCost;
-    [SerializeField] public Image imageSR;
+    [SerializeField] public Sprite imageSR;
     [SerializeField] private GameObject wrapper;
     [SerializeField] private bool isHoverCard = false;
     private Collider2D col;
@@ -35,7 +35,7 @@ public class CardView : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDrag
         title = card.Title;
         description = card.Descriptioon;
         energyCost = card.Energy.ToString();
-        imageSR = card.Image;
+        imageSR = card.Image.sprite;
     }
     
     #endregion
@@ -75,12 +75,10 @@ public class CardView : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDrag
 
     public CardDataList cardDataList;
 
+    private int CardCount = 3;
+
     void Start()
     {
-        cardDataList = FindObjectOfType<CardDataList>();
-
-
-
         col = GetComponent<Collider2D>();
 
         canvas = GetComponentInParent<Canvas>();
@@ -91,8 +89,9 @@ public class CardView : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDrag
 
         visualHandler = FindObjectOfType<VisualCardsHandler>();
         // Setup
+            cardDataList = FindObjectOfType<CardDataList>();
             System.Random rnd = new System.Random();
-            int random = rnd.Next(0, 3);                                // CARD COUNT
+            int random = rnd.Next(0, CardCount);                                // CARD COUNT
             if (cardDataList.getCard(random) == null) print("Card isnt null");
             if (cardDataList.getCard(random).Title != null) print(cardDataList.getCard(random).Title);
             title = cardDataList.getCard(random).Title;
@@ -100,12 +99,12 @@ public class CardView : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDrag
             energyCost = cardDataList.getCard(random).Energy.ToString();
             imageSR = cardDataList.getCard(random).Image;
 
-            //
+        //
         cardVisual = Instantiate(cardVisualPrefab, visualHandler ? visualHandler.transform : canvas.transform).GetComponent<CardVisual>();
         cardVisual.title.SetText(title);
         cardVisual.description.SetText(description);
         cardVisual.energyCost.SetText(energyCost);
-        //cardVisual.imageSR = imageSR;
+        cardVisual.imageSR.sprite = imageSR;
         cardVisual.Initialize(this);
     }
     

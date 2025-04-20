@@ -14,7 +14,7 @@ public class CardDataList : Singleton<CardDataList>
         
     }
 
-    CardData getCard(int index){
+    public CardData getCard(int index){
         return cards[index];
     }
 

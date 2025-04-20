@@ -11,10 +11,10 @@ using TMPro;
 public class CardVisual : MonoBehaviour
 {
     private bool initalize = false;
-    [SerializeField] private TMP_Text title;
-    [SerializeField] private TMP_Text description;
-    [SerializeField] private TMP_Text energyCost;
-    [SerializeField] private Image imageSR;
+    [SerializeField] public TMP_Text title;
+    [SerializeField] public TMP_Text description;
+    [SerializeField] public TMP_Text energyCost;
+    [SerializeField] public Image imageSR;
     
     public Card Card { get; private set; }
 
@@ -84,9 +84,7 @@ public class CardVisual : MonoBehaviour
         System.Random rnd = new System.Random();
         int random = rnd.Next(0, 20);
         parentCard = target;
-        title.SetText("title");
-        description.SetText("description");
-        energyCost.SetText(random.ToString());
+        imageSR.sprite = parentCard.imageSR;
 
         cardTransform = target.transform;
         canvas = GetComponent<Canvas>();

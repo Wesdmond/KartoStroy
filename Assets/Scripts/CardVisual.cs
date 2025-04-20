@@ -6,10 +6,17 @@ using UnityEngine.EventSystems;
 using Unity.Collections;
 using UnityEngine.UI;
 using Unity.VisualScripting;
+using TMPro;
 
 public class CardVisual : MonoBehaviour
 {
     private bool initalize = false;
+    [SerializeField] private TMP_Text title;
+    [SerializeField] private TMP_Text description;
+    [SerializeField] private TMP_Text energyCost;
+    [SerializeField] private Image imageSR;
+    
+    public Card Card { get; private set; }
 
     [Header("Card")]
     public CardView parentCard;
@@ -40,8 +47,9 @@ public class CardVisual : MonoBehaviour
 
     [Header("Scale Parameters")]
     [SerializeField] private bool scaleAnimations = true;
-    [SerializeField] private float scaleOnHover = 1.15f;
-    [SerializeField] private float scaleOnSelect = 1.25f;
+    [SerializeField] private float baseScale = 2.0f;
+    [SerializeField] private float scaleOnHover = 2.3f;
+    [SerializeField] private float scaleOnSelect = 2.5f;
     [SerializeField] private float scaleTransition = .15f;
     [SerializeField] private Ease scaleEase = Ease.OutBack;
 
@@ -73,7 +81,13 @@ public class CardVisual : MonoBehaviour
     public void Initialize(CardView target, int index = 0)
     {
         //Declarations
+        System.Random rnd = new System.Random();
+        int random = rnd.Next(0, 20);
         parentCard = target;
+        title.SetText("title");
+        description.SetText("description");
+        energyCost.SetText(random.ToString());
+
         cardTransform = target.transform;
         canvas = GetComponent<Canvas>();
         shadowCanvas = visualShadow.GetComponent<Canvas>();
@@ -179,7 +193,7 @@ public class CardVisual : MonoBehaviour
     private void EndDrag(CardView card)
     {
         canvas.overrideSorting = false;
-        transform.DOScale(1, scaleTransition).SetEase(scaleEase);
+        transform.DOScale(baseScale, scaleTransition).SetEase(scaleEase);
     }
 
     private void PointerEnter(CardView card)
@@ -194,7 +208,7 @@ public class CardVisual : MonoBehaviour
     private void PointerExit(CardView card)
     {
         if (!parentCard.wasDragged)
-            transform.DOScale(1, scaleTransition).SetEase(scaleEase);
+            transform.DOScale(baseScale, scaleTransition).SetEase(scaleEase);
     }
 
     private void PointerUp(CardView card, bool longPress)

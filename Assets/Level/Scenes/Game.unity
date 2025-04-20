@@ -2717,6 +2717,7 @@ MonoBehaviour:
   slotPrefab: {fileID: 3655645598659960977, guid: e99c361e7acdd41f0b904fef6be48fea, type: 3}
   cardsToSpawn: 7
   cards: []
+  cardDataList: {fileID: 92898275}
   tweenCardReturn: 1
 --- !u!114 &1522210045
 MonoBehaviour:

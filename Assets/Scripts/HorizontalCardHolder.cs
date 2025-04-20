@@ -19,11 +19,14 @@ public class HorizontalCardHolder : MonoBehaviour
     [SerializeField] private int cardsToSpawn = 7;
     public List<CardView> cards;
 
+    public CardDataList cardDataList;
+
     bool isCrossing = false;
     [SerializeField] private bool tweenCardReturn = true;
 
     void Start()
     {
+        cardDataList = CardDataList.Instance;
         for (int i = 0; i < cardsToSpawn; i++)
         {
             Instantiate(slotPrefab, transform);
@@ -36,6 +39,7 @@ public class HorizontalCardHolder : MonoBehaviour
 
         foreach (CardView card in cards)
         {
+            
             card.PointerEnterEvent.AddListener(CardPointerEnter);
             card.PointerExitEvent.AddListener(CardPointerExit);
             card.BeginDragEvent.AddListener(BeginDrag);

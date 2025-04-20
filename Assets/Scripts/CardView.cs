@@ -18,10 +18,10 @@ public static class ExtensionMethods
 public class CardView : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHandler, IPointerEnterHandler, IPointerExitHandler, IPointerUpHandler, IPointerDownHandler
 {
     #region Old Realization
-    [SerializeField] private TMP_Text title;
-    [SerializeField] private TMP_Text description;
-    [SerializeField] private TMP_Text energyCost;
-    [SerializeField] private SpriteRenderer imageSR;
+    [SerializeField] public string title;
+    [SerializeField] public string description;
+    [SerializeField] public string energyCost;
+    [SerializeField] public Image imageSR;
     [SerializeField] private GameObject wrapper;
     [SerializeField] private bool isHoverCard = false;
     private Collider2D col;
@@ -32,10 +32,10 @@ public class CardView : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDrag
     public void Setup(Card card)
     {
         Card = card;
-        title.text = card.Title;
-        description.text = card.Descriptioon;
-        energyCost.text = card.Energy.ToString();
-        imageSR.sprite = card.Image;
+        title = card.Title;
+        description = card.Descriptioon;
+        energyCost = card.Energy.ToString();
+        imageSR = card.Image;
     }
     
     #endregion
@@ -73,8 +73,14 @@ public class CardView : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDrag
     [HideInInspector] public UnityEvent<CardView> EndDragEvent;
     [HideInInspector] public UnityEvent<CardView, bool> SelectEvent;
 
+    public CardDataList cardDataList;
+
     void Start()
     {
+        cardDataList = FindObjectOfType<CardDataList>();
+
+
+
         col = GetComponent<Collider2D>();
 
         canvas = GetComponentInParent<Canvas>();
@@ -84,14 +90,29 @@ public class CardView : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDrag
             return;
 
         visualHandler = FindObjectOfType<VisualCardsHandler>();
+        // Setup
+            System.Random rnd = new System.Random();
+            int random = rnd.Next(0, 3);                                // CARD COUNT
+            if (cardDataList.getCard(random) == null) print("Card isnt null");
+            if (cardDataList.getCard(random).Title != null) print(cardDataList.getCard(random).Title);
+            title = cardDataList.getCard(random).Title;
+            description = cardDataList.getCard(random).Description;
+            energyCost = cardDataList.getCard(random).Energy.ToString();
+            imageSR = cardDataList.getCard(random).Image;
+
+            //
         cardVisual = Instantiate(cardVisualPrefab, visualHandler ? visualHandler.transform : canvas.transform).GetComponent<CardVisual>();
+        cardVisual.title.SetText(title);
+        cardVisual.description.SetText(description);
+        cardVisual.energyCost.SetText(energyCost);
+        //cardVisual.imageSR = imageSR;
         cardVisual.Initialize(this);
     }
     
     void Update()
     {
         ClampPosition();
-        print(transform.position);
+        //print(transform.position);
         if (isDragging)
         {
             Vector2 targetPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition) - offset;

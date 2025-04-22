@@ -317,6 +317,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 370c4f5a46b985846a879ac3d6c98e51, type: 2}
   - {fileID: 11400000, guid: 719e8c817e0033648a469719d8b48699, type: 2}
   - {fileID: 11400000, guid: 64a1cada35040df49ab5e63ef762875e, type: 2}
+  - {fileID: 11400000, guid: 972d0bd7c494e9e4aa66542841c3b526, type: 2}
 --- !u!4 &92898276
 Transform:
   m_ObjectHideFlags: 0
@@ -2715,7 +2716,7 @@ MonoBehaviour:
   selectedCard: {fileID: 0}
   hoveredCard: {fileID: 0}
   slotPrefab: {fileID: 3655645598659960977, guid: e99c361e7acdd41f0b904fef6be48fea, type: 3}
-  cardsToSpawn: 7
+  cardsToSpawn: 4
   cards: []
   cardDataList: {fileID: 92898275}
   tweenCardReturn: 1

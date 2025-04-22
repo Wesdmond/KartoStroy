@@ -75,7 +75,7 @@ public class CardView : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDrag
 
     public CardDataList cardDataList;
 
-    private int CardCount = 3;
+    private int CardCount = 4;
 
     void Start()
     {

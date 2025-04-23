@@ -1,10 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using DG.Tweening;
 using System.Linq;
-using Unity.Mathematics;
+using UnityEngine.Events;
 
 public class HorizontalCardHolder : MonoBehaviour
 {
@@ -28,6 +27,7 @@ public class HorizontalCardHolder : MonoBehaviour
 
     [SerializeField] private bool isHandFillAtStart = true;
     [SerializeField] private Vector2 hideCardOffset = new Vector2(0f, 500f);
+    [HideInInspector] public UnityEvent<CardView> newItemSelected = new UnityEvent<CardView>();
 
     void Start()
     {
@@ -86,7 +86,11 @@ public class HorizontalCardHolder : MonoBehaviour
             }
         }
     }
-    
+
+    public CardView GetSelectedCard()
+    {
+        return selectedCard;
+    }
     
     void Update()
     {
@@ -102,6 +106,7 @@ public class HorizontalCardHolder : MonoBehaviour
         if (Input.GetMouseButtonDown(1))
         {
             selectedCard = null;
+            newItemSelected.Invoke(selectedCard);
             foreach (CardView card in cards)
             {
                 card.Deselect();
@@ -212,6 +217,7 @@ public class HorizontalCardHolder : MonoBehaviour
         card.description = cardData.Description;
         card.energyCost = cardData.Energy.ToString();
         card.imageSR = cardData.Sprite;
+        card.data = cardData;
         cards.Add(card);
     }
 
@@ -220,7 +226,6 @@ public class HorizontalCardHolder : MonoBehaviour
         if (!isSelected)
         {
             if (selectedCard == cardView) selectedCard = null;
-            return;
         }
         else
         {
@@ -230,15 +235,8 @@ public class HorizontalCardHolder : MonoBehaviour
             }
             selectedCard = cardView;
         }
-
-        if (selectedCard != null)
-        {
-            // Show button "PLAY CARD"
-        }
-        else
-        {
-            // Hide button "PLAY CARD"
-        }
+        
+        newItemSelected.Invoke(selectedCard);
     }
     
     public void FillHand(int cardsCount = int.MinValue)
@@ -279,6 +277,7 @@ public class HorizontalCardHolder : MonoBehaviour
             card.description = cardData.Description;
             card.energyCost = cardData.Energy.ToString();
             card.imageSR = cardData.Sprite;
+            card.data = cardData;
             cardCount++;
         }
 

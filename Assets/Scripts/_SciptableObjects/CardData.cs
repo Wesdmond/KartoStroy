@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
@@ -11,7 +12,7 @@ public enum CardNames
     FreezingTime = 4
 }
 
-[CreateAssetMenu(menuName = "Data/Card")]
+[CreateAssetMenu(fileName = "Data/Card", menuName = "CardData")]
 public class CardData : ScriptableObject
 {
     [field: SerializeField] public string Title { get; private set; }
@@ -19,4 +20,5 @@ public class CardData : ScriptableObject
     [field: SerializeField] public int Energy { get; private set; }
     [field: SerializeField] public int ShopPrice { get; private set; }
     [field: SerializeField] public Sprite Sprite { get; private set; }
+    public List<EffectSO> effects;
 }

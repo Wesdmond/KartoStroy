@@ -43,6 +43,7 @@ public class CardView : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDrag
     [SerializeField] private bool instantiateVisual = true;
     private VisualCardsHandler visualHandler;
     private Vector3 offset;
+    public CardData data;
 
     [Header("Movement")]
     [SerializeField] private float moveSpeedLimit = 50;
@@ -147,6 +148,18 @@ public class CardView : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDrag
         
     }
 
+    private bool CheckIsCanPlayCard()
+    {
+        float percentageOfScreenHeight = 0.40f;
+        print(percentageOfScreenHeight * Screen.height);
+        if (Input.mousePosition.y > percentageOfScreenHeight * Screen.height)
+        {
+            return true;
+        }
+
+        return false;
+    }
+    
     public void OnEndDrag(PointerEventData eventData)
     {
         EndDragEvent.Invoke(this);
@@ -154,6 +167,12 @@ public class CardView : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDrag
         canvas.GetComponent<GraphicRaycaster>().enabled = true;
         imageComponent.raycastTarget = true;
 
+        print(CheckIsCanPlayCard());
+        if (CheckIsCanPlayCard())
+        {
+            PerformEffect();
+        }
+        
         StartCoroutine(FrameWait());
 
         IEnumerator FrameWait()
@@ -217,6 +236,15 @@ public class CardView : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDrag
                 transform.localPosition += cardVisual.transform.up * 50;
             else
                 transform.localPosition = Vector3.zero;
+        }
+    }
+
+    public void PerformEffect()
+    {
+        Debug.Log(gameObject.name + " is performing effects:    ");
+        foreach (var effect in data.effects)
+        {
+            effect.Perform();
         }
     }
 

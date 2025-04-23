@@ -6,10 +6,13 @@ using UnityEngine.UI;
 
 public class PlayerSystem : Singleton<PlayerSystem>
 {
+    [Header("Player Parameters")]
     [SerializeField] private int Energy = 3;
     [SerializeField] private int Money = 100;
-    [SerializeField, Range(0.0f, 2.0f)] private float ChangingDelay = 1.0f;
-
+    [SerializeField] private int MaxEnergyLimit = 10;
+    [SerializeField] private float ChangingDelay = 1.0f;
+    
+    [Header("Links to objects")]
     [SerializeField] public TMP_Text MoneyText;
     [SerializeField] public TMP_Text EnergyText;
 
@@ -47,5 +50,10 @@ public class PlayerSystem : Singleton<PlayerSystem>
     public int GetMoney()
     {
         return Money;
+    }
+
+    public void ResetEnergy()
+    {
+        Energy = MaxEnergyLimit;
     }
 }

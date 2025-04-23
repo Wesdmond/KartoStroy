@@ -17,4 +17,4 @@ MonoBehaviour:
     \u0431\u0435\u0434\u0441\u0442\u0432\u0438\u044F"
   <Energy>k__BackingField: 7
   <ShopPrice>k__BackingField: 250
-  <Image>k__BackingField: {fileID: 21300000, guid: cd0016adaee17674181c0462aeecfba3, type: 3}
+  <Sprite>k__BackingField: {fileID: 21300000, guid: cd0016adaee17674181c0462aeecfba3, type: 3}

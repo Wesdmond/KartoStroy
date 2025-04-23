@@ -8,17 +8,16 @@ public class DisasterSystem : MonoBehaviour
 
     private List<DisasterData> disasters;
 
-    private List<DisasterData> disastersRandom = new List<DisasterData>(); // ingame meow meow
+    private List<DisasterData> disastersRandom = new(); // ingame meow meow
 
     void Start()
     {
-        if (disasterSO != null) disasters = new List<DisasterData>(disasterSO.disasterData);
+        if (disasterSO != null) disasters = new(disasterSO.disasterData);
         Randomize();
         foreach (var i in disastersRandom) {
             if (i == null) print("null");
             print(i.description);
         }
-        
     }
     public void Randomize()
     {
@@ -28,7 +27,7 @@ public class DisasterSystem : MonoBehaviour
             disastersRandom.Add(disasters[random]);
             disasters.RemoveAt(random);
         }
-        disasters = new List<DisasterData>(disasterSO.disasterData);
+        disasters = new(disasterSO.disasterData);
     }
 
     void OnEnable()

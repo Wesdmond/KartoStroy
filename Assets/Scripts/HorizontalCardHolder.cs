@@ -5,7 +5,6 @@ using Unity.VisualScripting;
 using UnityEngine;
 using DG.Tweening;
 using System.Linq;
-
 public class HorizontalCardHolder : MonoBehaviour
 {
 
@@ -16,7 +15,7 @@ public class HorizontalCardHolder : MonoBehaviour
     private RectTransform rect;
 
     [Header("Spawn Settings")]
-    [SerializeField] private int cardsToSpawn = 7;
+    [SerializeField] private int muxHandCard = 7;
     public List<CardView> cards;
 
 
@@ -153,9 +152,19 @@ public class HorizontalCardHolder : MonoBehaviour
         }
         cards.Clear();
     }
+    
+    public bool IsHandFull()
+    {
+        return cards.Count >= muxHandCard;
+    }
 
     public void AddCard(CardNames cardName)
     {
+        if (IsHandFull())
+        {
+            Debug.LogWarning("Hand is full");
+            return;
+        }
         CardView card = Instantiate(slotPrefab, transform).GetComponentInChildren<CardView>();
         if (card == null)
         {
@@ -178,12 +187,16 @@ public class HorizontalCardHolder : MonoBehaviour
         card.description = cardData.Description;
         card.energyCost = cardData.Energy.ToString();
         card.imageSR = cardData.Sprite;
+        cards.Add(card);
     }
 
     public void FillHand(int cardsCount = int.MinValue)
     {
-        if (cardsCount == int.MinValue) cardsCount = cardsToSpawn;
-        
+        if (cards.Count != 0)
+        {
+            DeleteAllCards();
+        }
+        if (cardsCount == int.MinValue) cardsCount = muxHandCard;
         for (int i = 0; i < cardsCount; i++)
         {
             Instantiate(slotPrefab, transform);

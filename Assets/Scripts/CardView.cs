@@ -60,6 +60,7 @@ public class CardView : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDrag
     [Header("States")]
     public bool isHovering;
     public bool isDragging;
+    public bool isHiding;
     [HideInInspector] public bool wasDragged;
 
     [Header("Events")]
@@ -107,7 +108,10 @@ public class CardView : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDrag
     
     void Update()
     {
-        ClampPosition();
+        if (!isHiding)
+        {
+            ClampPosition();
+        }
         if (isDragging)
         {
             Vector2 targetPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition) - offset;

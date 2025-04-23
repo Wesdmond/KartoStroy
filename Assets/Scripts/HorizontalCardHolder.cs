@@ -1,14 +1,16 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using DG.Tweening;
 using System.Linq;
+using Unity.Mathematics;
+
 public class HorizontalCardHolder : MonoBehaviour
 {
 
-    [SerializeField] private CardView selectedCard;
+    [SerializeField] private CardView draggingCard;
+    [SerializeReference] private CardView selectedCard;
     [SerializeReference] private CardView hoveredCard;
 
     [SerializeField] private GameObject slotPrefab;
@@ -25,6 +27,7 @@ public class HorizontalCardHolder : MonoBehaviour
     [Header("Our Custom Settings")] 
 
     [SerializeField] private bool isHandFillAtStart = true;
+    [SerializeField] private Vector2 hideCardOffset = new Vector2(0f, 500f);
 
     void Start()
     {
@@ -35,21 +38,21 @@ public class HorizontalCardHolder : MonoBehaviour
 
     private void BeginDrag(CardView card)
     {
-        selectedCard = card;
+        draggingCard = card;
     }
 
 
     void EndDrag(CardView card)
     {
-        if (selectedCard == null)
+        if (draggingCard == null)
             return;
 
-        selectedCard.transform.DOLocalMove(selectedCard.selected ? new Vector3(0,selectedCard.selectionOffset,0) : Vector3.zero, tweenCardReturn ? .15f : 0).SetEase(Ease.OutBack);
+        draggingCard.transform.DOLocalMove(draggingCard.selected ? new Vector3(0,draggingCard.selectionOffset,0) : Vector3.zero, tweenCardReturn ? .15f : 0).SetEase(Ease.OutBack);
 
         rect.sizeDelta += Vector2.right;
         rect.sizeDelta -= Vector2.right;
 
-        selectedCard = null;
+        draggingCard = null;
 
     }
 
@@ -63,6 +66,28 @@ public class HorizontalCardHolder : MonoBehaviour
         hoveredCard = null;
     }
 
+    void HideCards()
+    {
+        foreach (CardView card in cards)
+        {
+            card.isHiding = true;
+        }
+        rect.DOAnchorPos(rect.anchoredPosition - hideCardOffset, .2f).SetEase(Ease.InBack);
+    }
+
+    void ShowCards()
+    {
+        rect.DOAnchorPos(rect.anchoredPosition + hideCardOffset, .2f).SetEase(Ease.InBack).OnComplete(SetCardsFlag);
+        void SetCardsFlag()
+        {
+            foreach (CardView card in cards)
+            {
+                card.isHiding = false;
+            }
+        }
+    }
+    
+    
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Delete))
@@ -71,19 +96,19 @@ public class HorizontalCardHolder : MonoBehaviour
             {
                 Destroy(hoveredCard.transform.parent.gameObject);
                 cards.Remove(hoveredCard);
-
             }
         }
-
+        
         if (Input.GetMouseButtonDown(1))
         {
+            selectedCard = null;
             foreach (CardView card in cards)
             {
                 card.Deselect();
             }
         }
 
-        if (selectedCard == null)
+        if (draggingCard == null)
             return;
 
         if (isCrossing)
@@ -92,18 +117,18 @@ public class HorizontalCardHolder : MonoBehaviour
         for (int i = 0; i < cards.Count; i++)
         {
 
-            if (selectedCard.transform.position.x > cards[i].transform.position.x)
+            if (draggingCard.transform.position.x > cards[i].transform.position.x)
             {
-                if (selectedCard.ParentIndex() < cards[i].ParentIndex())
+                if (draggingCard.ParentIndex() < cards[i].ParentIndex())
                 {
                     Swap(i);
                     break;
                 }
             }
 
-            if (selectedCard.transform.position.x < cards[i].transform.position.x)
+            if (draggingCard.transform.position.x < cards[i].transform.position.x)
             {
-                if (selectedCard.ParentIndex() > cards[i].ParentIndex())
+                if (draggingCard.ParentIndex() > cards[i].ParentIndex())
                 {
                     Swap(i);
                     break;
@@ -116,19 +141,19 @@ public class HorizontalCardHolder : MonoBehaviour
     {
         isCrossing = true;
 
-        Transform focusedParent = selectedCard.transform.parent;
+        Transform focusedParent = draggingCard.transform.parent;
         Transform crossedParent = cards[index].transform.parent;
 
         cards[index].transform.SetParent(focusedParent);
         cards[index].transform.localPosition = cards[index].selected ? new Vector3(0, cards[index].selectionOffset, 0) : Vector3.zero;
-        selectedCard.transform.SetParent(crossedParent);
+        draggingCard.transform.SetParent(crossedParent);
 
         isCrossing = false;
 
         if (cards[index].cardVisual == null)
             return;
 
-        bool swapIsRight = cards[index].ParentIndex() > selectedCard.ParentIndex();
+        bool swapIsRight = cards[index].ParentIndex() > draggingCard.ParentIndex();
         cards[index].cardVisual.Swap(swapIsRight ? -1 : 1);
 
         //Updated Visual Indexes
@@ -190,6 +215,32 @@ public class HorizontalCardHolder : MonoBehaviour
         cards.Add(card);
     }
 
+    private void OnNewCardSelected(CardView cardView, bool isSelected)
+    {
+        if (!isSelected)
+        {
+            if (selectedCard == cardView) selectedCard = null;
+            return;
+        }
+        else
+        {
+            if (selectedCard != null)
+            {
+                selectedCard.Deselect();
+            }
+            selectedCard = cardView;
+        }
+
+        if (selectedCard != null)
+        {
+            // Show button "PLAY CARD"
+        }
+        else
+        {
+            // Hide button "PLAY CARD"
+        }
+    }
+    
     public void FillHand(int cardsCount = int.MinValue)
     {
         if (cards.Count != 0)
@@ -214,6 +265,7 @@ public class HorizontalCardHolder : MonoBehaviour
             card.PointerExitEvent.AddListener(CardPointerExit);
             card.BeginDragEvent.AddListener(BeginDrag);
             card.EndDragEvent.AddListener(EndDrag);
+            card.SelectEvent.AddListener(OnNewCardSelected);
             card.name = cardCount.ToString();
             
             int random = UnityEngine.Random.Range(0, cardDataList.cards.Count);

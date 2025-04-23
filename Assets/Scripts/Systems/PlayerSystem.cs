@@ -24,22 +24,20 @@ public class PlayerSystem : Singleton<PlayerSystem>
 
     void Update()
     {
-        Money++;
-        MoneyText.SetText(Money.ToString());
+        
     }
 
     public void ChangeEnergy(int amount, float delay = float.NaN)
     {
+        
         if (float.IsNaN(delay)) delay = ChangingDelay;
-        DOTween.To(() => Energy, x => Energy = x, amount, delay);
-        EnergyText.SetText(Energy.ToString());
+        DOTween.To(() => Energy, x => Energy = x, amount, delay).OnUpdate(() => EnergyText.SetText(Energy.ToString()));
     }
 
     public void ChangeMoney(int amount, float delay = float.NaN)
     {
         if (float.IsNaN(delay)) delay = ChangingDelay;
-        DOTween.To(() => Money, x => Money = x, amount, delay);
-        MoneyText.SetText(Money.ToString()); 
+        DOTween.To(() => Money, x => Money = x, amount, delay).OnUpdate(() => MoneyText.SetText(Money.ToString()));;
     }
 
     public int GetEnergy()

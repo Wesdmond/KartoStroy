@@ -148,10 +148,10 @@ public class CardView : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDrag
         
     }
 
+    // TODO: MakeParameters
     private bool CheckIsCanPlayCard()
     {
         float percentageOfScreenHeight = 0.40f;
-        print(percentageOfScreenHeight * Screen.height);
         if (Input.mousePosition.y > percentageOfScreenHeight * Screen.height)
         {
             return true;
@@ -167,7 +167,6 @@ public class CardView : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDrag
         canvas.GetComponent<GraphicRaycaster>().enabled = true;
         imageComponent.raycastTarget = true;
 
-        print(CheckIsCanPlayCard());
         if (CheckIsCanPlayCard())
         {
             PerformEffect();

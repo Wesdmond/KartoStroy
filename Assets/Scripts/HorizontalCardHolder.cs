@@ -4,6 +4,7 @@ using UnityEngine;
 using DG.Tweening;
 using System.Linq;
 using UnityEngine.Events;
+using Screen = UnityEngine.Device.Screen;
 
 public class HorizontalCardHolder : MonoBehaviour
 {
@@ -26,7 +27,7 @@ public class HorizontalCardHolder : MonoBehaviour
     [Header("Our Custom Settings")] 
 
     [SerializeField] private bool isHandFillAtStart = true;
-    [SerializeField] private Vector2 hideCardOffset = new Vector2(0f, 500f);
+    [SerializeField] private float hideCardOffsetPercentage = 0.3f;
     [HideInInspector] public UnityEvent<CardView> newItemSelected = new UnityEvent<CardView>();
 
     void Start()
@@ -72,12 +73,12 @@ public class HorizontalCardHolder : MonoBehaviour
         {
             card.isHiding = true;
         }
-        rect.DOAnchorPos(rect.anchoredPosition - hideCardOffset, .2f).SetEase(Ease.InBack);
+        rect.DOAnchorPos(rect.anchoredPosition - new Vector2(0f, hideCardOffsetPercentage * Screen.height), .2f).SetEase(Ease.InBack);
     }
 
     void ShowCards()
     {
-        rect.DOAnchorPos(rect.anchoredPosition + hideCardOffset, .2f).SetEase(Ease.InBack).OnComplete(SetCardsFlag);
+        rect.DOAnchorPos(rect.anchoredPosition + new Vector2(0f, hideCardOffsetPercentage * Screen.height), .2f).SetEase(Ease.InBack).OnComplete(SetCardsFlag);
         void SetCardsFlag()
         {
             foreach (CardView card in cards)
@@ -91,7 +92,9 @@ public class HorizontalCardHolder : MonoBehaviour
     {
         return selectedCard;
     }
-    
+
+
+    private bool test = true;
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Delete))
@@ -101,6 +104,19 @@ public class HorizontalCardHolder : MonoBehaviour
                 Destroy(hoveredCard.transform.parent.gameObject);
                 cards.Remove(hoveredCard);
             }
+        }
+        
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            if (test)
+            {
+                HideCards();
+            }
+            else
+            {
+                ShowCards();
+            }
+            test = !test;
         }
         
         if (Input.GetMouseButtonDown(1))

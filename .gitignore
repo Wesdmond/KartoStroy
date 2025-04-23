@@ -75,3 +75,5 @@ crashlytics-build.properties
 
 #My
 /.idea/**
+Assets/Level/Scenes/cpu.unity
+Assets/Level/Scenes/cpu.unity.meta

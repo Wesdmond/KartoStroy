@@ -1,5 +1,3 @@
-using System;
-using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
@@ -33,7 +31,7 @@ public class CardView : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDrag
     {
         Card = card;
         title = card.Title;
-        description = card.Descriptioon;
+        description = card.Description;
         energyCost = card.Energy.ToString();
         imageSR = card.Image.sprite;
     }
@@ -72,11 +70,11 @@ public class CardView : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDrag
     [HideInInspector] public UnityEvent<CardView> BeginDragEvent;
     [HideInInspector] public UnityEvent<CardView> EndDragEvent;
     [HideInInspector] public UnityEvent<CardView, bool> SelectEvent;
-
-    public CardDataList cardDataList;
-
+    
     private int CardCount = 4;
 
+    
+    
     void Start()
     {
         col = GetComponent<Collider2D>();
@@ -86,19 +84,18 @@ public class CardView : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDrag
 
         if (!instantiateVisual)
             return;
-
         visualHandler = FindObjectOfType<VisualCardsHandler>();
         // Setup
-            cardDataList = FindObjectOfType<CardDataList>();
-            System.Random rnd = new System.Random();
-            int random = rnd.Next(0, CardCount);                                // CARD COUNT
-            if (cardDataList.getCard(random) == null) print("Card isnt null");
-            if (cardDataList.getCard(random).Title != null) print(cardDataList.getCard(random).Title);
-            title = cardDataList.getCard(random).Title;
-            description = cardDataList.getCard(random).Description;
-            energyCost = cardDataList.getCard(random).Energy.ToString();
-            imageSR = cardDataList.getCard(random).Image;
-
+            // CardDataList cardDataList = CardDataList.Instance;
+            //
+            // System.Random rnd = new System.Random();
+            // int random = Random.Range(0, CardCount);
+            // if (cardDataList.getCard(random) == null) print("Card isnt null");
+            // if (cardDataList.getCard(random).Title != null) print(cardDataList.getCard(random).Title);
+            // title = cardDataList.getCard(random).Title;
+            // description = cardDataList.getCard(random).Description;
+            // energyCost = cardDataList.getCard(random).Energy.ToString();
+            // imageSR = cardDataList.getCard(random).Sprite;
         //
         cardVisual = Instantiate(cardVisualPrefab, visualHandler ? visualHandler.transform : canvas.transform).GetComponent<CardVisual>();
         cardVisual.title.SetText(title);
@@ -111,7 +108,6 @@ public class CardView : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDrag
     void Update()
     {
         ClampPosition();
-        //print(transform.position);
         if (isDragging)
         {
             Vector2 targetPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition) - offset;
@@ -229,7 +225,6 @@ public class CardView : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDrag
     {
         return transform.parent.CompareTag("Slot") ? transform.parent.GetSiblingIndex() : 0;
     }
-
     public float NormalizedPosition()
     {
         return transform.parent.CompareTag("Slot") ? ExtensionMethods.Remap((float)ParentIndex(), 0, (float)(transform.parent.parent.childCount - 1), 0, 1) : 0;

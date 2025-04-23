@@ -19,46 +19,19 @@ public class HorizontalCardHolder : MonoBehaviour
     [SerializeField] private int cardsToSpawn = 7;
     public List<CardView> cards;
 
-    public CardDataList cardDataList;
 
     bool isCrossing = false;
     [SerializeField] private bool tweenCardReturn = true;
 
+    [Header("Our Custom Settings")] 
+
+    [SerializeField] private bool isHandFillAtStart = true;
+
     void Start()
     {
-        cardDataList = CardDataList.Instance;
-        for (int i = 0; i < cardsToSpawn; i++)
-        {
-            Instantiate(slotPrefab, transform);
-        }
-
         rect = GetComponent<RectTransform>();
-        cards = GetComponentsInChildren<CardView>().ToList();
-
-        int cardCount = 0;
-
-        foreach (CardView card in cards)
-        {
-            
-            card.PointerEnterEvent.AddListener(CardPointerEnter);
-            card.PointerExitEvent.AddListener(CardPointerExit);
-            card.BeginDragEvent.AddListener(BeginDrag);
-            card.EndDragEvent.AddListener(EndDrag);
-            card.name = cardCount.ToString();
-            cardCount++;
-        }
-
-        StartCoroutine(Frame());
-
-        IEnumerator Frame()
-        {
-            yield return new WaitForSecondsRealtime(.1f);
-            for (int i = 0; i < cards.Count; i++)
-            {
-                if (cards[i].cardVisual != null)
-                    cards[i].cardVisual.UpdateIndex(transform.childCount);
-            }
-        }
+        if (isHandFillAtStart)
+            FillHand();
     }
 
     private void BeginDrag(CardView card)
@@ -163,6 +136,97 @@ public class HorizontalCardHolder : MonoBehaviour
         foreach (CardView card in cards)
         {
             card.cardVisual.UpdateIndex(transform.childCount);
+        }
+    }
+
+    public void DeleteCard(int index)
+    {
+        Destroy(cards[index].transform.parent.gameObject);
+        cards.Remove(hoveredCard);
+    }
+
+    public void DeleteAllCards()
+    {
+        foreach (CardView card in cards)
+        {
+            Destroy(card.transform.parent.gameObject);
+        }
+        cards.Clear();
+    }
+
+    public void AddCard(CardNames cardName)
+    {
+        CardView card = Instantiate(slotPrefab, transform).GetComponentInChildren<CardView>();
+        if (card == null)
+        {
+            Debug.LogError("Card could not be instantiated");
+            return;
+        }
+        card.PointerEnterEvent.AddListener(CardPointerEnter);
+        card.PointerExitEvent.AddListener(CardPointerExit);
+        card.BeginDragEvent.AddListener(BeginDrag);
+        card.EndDragEvent.AddListener(EndDrag);
+        card.name = cards.Count.ToString();
+        
+        CardData cardData = CardDataList.Instance.getCard(cardName);
+        if (cardData == null)
+        {
+            Debug.LogError("Card is null");
+            return;
+        }
+        card.title = cardData.Title;
+        card.description = cardData.Description;
+        card.energyCost = cardData.Energy.ToString();
+        card.imageSR = cardData.Sprite;
+    }
+
+    public void FillHand(int cardsCount = int.MinValue)
+    {
+        if (cardsCount == int.MinValue) cardsCount = cardsToSpawn;
+        
+        for (int i = 0; i < cardsCount; i++)
+        {
+            Instantiate(slotPrefab, transform);
+        }
+        
+        cards = GetComponentsInChildren<CardView>().ToList();
+
+        int cardCount = 0;
+
+        CardDataList cardDataList = CardDataList.Instance;
+        CardData cardData = null;
+        foreach (CardView card in cards)
+        {
+            card.PointerEnterEvent.AddListener(CardPointerEnter);
+            card.PointerExitEvent.AddListener(CardPointerExit);
+            card.BeginDragEvent.AddListener(BeginDrag);
+            card.EndDragEvent.AddListener(EndDrag);
+            card.name = cardCount.ToString();
+            
+            int random = UnityEngine.Random.Range(0, cardDataList.cards.Count);
+            cardData = cardDataList.getCard(random);
+            if (cardData == null)
+            {
+                Debug.LogError("Card is null");
+                return;
+            }
+            card.title = cardData.Title;
+            card.description = cardData.Description;
+            card.energyCost = cardData.Energy.ToString();
+            card.imageSR = cardData.Sprite;
+            cardCount++;
+        }
+
+        StartCoroutine(Frame());
+
+        IEnumerator Frame()
+        {
+            yield return new WaitForSecondsRealtime(.1f);
+            for (int i = 0; i < cards.Count; i++)
+            {
+                if (cards[i].cardVisual != null)
+                    cards[i].cardVisual.UpdateIndex(transform.childCount);
+            }
         }
     }
 

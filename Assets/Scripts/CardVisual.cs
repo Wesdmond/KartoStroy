@@ -16,8 +16,6 @@ public class CardVisual : MonoBehaviour
     [SerializeField] public TMP_Text energyCost;
     [SerializeField] public Image imageSR;
     
-    public Card Card { get; private set; }
-
     [Header("Card")]
     public CardView parentCard;
     private Transform cardTransform;

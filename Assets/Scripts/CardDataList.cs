@@ -15,6 +15,21 @@ public class CardDataList : Singleton<CardDataList>
     }
 
     public CardData getCard(int index){
+        if (index < 0 || index >= cards.Count)
+        {
+            Debug.LogError("No such card id: " + index);
+            return null;
+        }
+        return cards[index];
+    }
+    
+    public CardData getCard(CardNames name){
+        int index = (int)name;
+        if (index < 0 || index >= cards.Count)
+        {
+            Debug.LogError("No such card name: " + name.ToString());
+            return null;
+        }
         return cards[index];
     }
 

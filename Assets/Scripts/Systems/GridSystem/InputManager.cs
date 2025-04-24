@@ -25,12 +25,12 @@ public class InputManager : MonoBehaviour
         {
             switch (input)
             {
-                case "e": placementSystem.StartPlacement(0); break;
+                case "e": placementSystem.StartPlacement(1); break;
                 case "q": placementSystem.StartRemoving(); break;
-                case "1": ChangePlacementID(0); break;
-                case "2": ChangePlacementID(1); break;
-                case "3": ChangePlacementID(2); break;
-                case "4": ChangePlacementID(3); break;
+                case "1": ChangePlacementID(1); break;
+                case "2": ChangePlacementID(2); break;
+                case "3": ChangePlacementID(3); break;
+                case "4": ChangePlacementID(4); break;
                 case "R": break;
             }
         }

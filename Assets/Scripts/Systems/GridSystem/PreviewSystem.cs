@@ -14,13 +14,13 @@ public class PreviewSystem : MonoBehaviour
     private Material previewMaterialPrefab;
     private Material previewMaterialInstance;
 
-    private Renderer cellIndicatorRenderer;
+    private SpriteRenderer cellIndicatorRenderer;
 
     private void Start()
     {
         previewMaterialInstance = new Material(previewMaterialPrefab);
         cellIndicator.SetActive(false);
-        cellIndicatorRenderer = cellIndicator.GetComponentInChildren<Renderer>();
+        cellIndicatorRenderer = cellIndicator.GetComponentInChildren<SpriteRenderer>();
     }
 
     public void StartShowingPlacementPreview(GameObject prefab, Vector2Int size)
@@ -36,7 +36,7 @@ public class PreviewSystem : MonoBehaviour
         if(size.x > 0 || size.y > 0)
         {
             cellIndicator.transform.localScale = new Vector3(size.x, 1, size.y);
-            cellIndicatorRenderer.material.mainTextureScale = size;
+            // cellIndicatorRenderer.material.mainTextureScale = size;
         }
     }
 
@@ -87,7 +87,7 @@ public class PreviewSystem : MonoBehaviour
         Color c = validity ? Color.white : Color.red;
 
         c.a = 0.5f;
-        cellIndicatorRenderer.material.color = c;
+        cellIndicatorRenderer.color = c;
     }
 
     private void MoveCursor(Vector3 position)

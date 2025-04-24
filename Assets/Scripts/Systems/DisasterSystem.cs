@@ -13,11 +13,8 @@ public class DisasterSystem : MonoBehaviour
     void Start()
     {
         if (disasterSO != null) disasters = new(disasterSO.disasterData);
+        else Debug.LogError("DisasterSystem: disasterSO is null");
         Randomize();
-        foreach (var i in disastersRandom) {
-            if (i == null) print("null");
-            print(i.description);
-        }
     }
     public void Randomize()
     {

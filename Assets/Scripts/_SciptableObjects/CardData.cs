@@ -12,7 +12,7 @@ public enum CardNames
     FreezingTime = 4
 }
 
-[CreateAssetMenu(fileName = "Data/Card", menuName = "CardData")]
+[CreateAssetMenu(menuName = "Data/Card", fileName = "CardData")]
 public class CardData : ScriptableObject
 {
     [field: SerializeField] public string Title { get; private set; }

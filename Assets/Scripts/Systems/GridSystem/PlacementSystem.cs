@@ -36,9 +36,12 @@ public class PlacementSystem : MonoBehaviour
 
     [SerializeField]
     private SoundFeedback soundFeedback;
+    
+    private Camera mainCamera;
 
     private void Start()
     {
+        mainCamera = Camera.main;
         gridVisualization.SetActive(false);
         floorData = new();
         furnitureData = new();
@@ -47,7 +50,6 @@ public class PlacementSystem : MonoBehaviour
     public void StartPlacement(int ID)
     {
         StopPlacement();
-        print("Trying place");
         gridVisualization.SetActive(true);
         buildingState = new PlacementState(ID,
                                            grid,
@@ -63,7 +65,7 @@ public class PlacementSystem : MonoBehaviour
     public void StartRemoving()
     {
         StopPlacement();
-        gridVisualization.SetActive(false) ;
+        gridVisualization.SetActive(true) ;
         buildingState = new RemovingState(grid, preview, floorData, furnitureData, objectPlacer, soundFeedback);
         inputManager.OnClicked += PlaceStructure;
         inputManager.OnExit += StopPlacement;
@@ -83,18 +85,8 @@ public class PlacementSystem : MonoBehaviour
 
     }
 
-    //private bool CheckPlacementValidity(Vector3Int gridPosition, int selectedObjectIndex)
-    //{
-    //    GridData selectedData = database.objectsData[selectedObjectIndex].ID == 0 ? 
-    //        floorData : 
-    //        furnitureData;
-
-    //    return selectedData.CanPlaceObejctAt(gridPosition, database.objectsData[selectedObjectIndex].Size);
-    //}
-
     private void StopPlacement()
     {
-        print("Trying stop placement");
         // soundFeedback.PlaySound(SoundType.Click);
         if (buildingState == null)
             return;
@@ -105,12 +97,14 @@ public class PlacementSystem : MonoBehaviour
         lastDetectedPosition = Vector3Int.zero;
         buildingState = null;
     }
-
+    
     private void Update()
     {
         if (buildingState == null)
             return;
-        Vector3 mousePosition = inputManager.GetSelectedMapPosition();
+        // Vector3 mousePosition = inputManager.GetSelectedMapPosition();
+        Vector3 mousePosition = mainCamera.ScreenToWorldPoint(Input.mousePosition);
+        mousePosition.z = mainCamera.nearClipPlane;
         Vector3Int gridPosition = grid.WorldToCell(mousePosition);
         if(lastDetectedPosition != gridPosition)
         {

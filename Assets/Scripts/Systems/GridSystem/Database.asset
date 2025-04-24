@@ -14,18 +14,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   objectsData:
   - <Name>k__BackingField: Observatory
-    <ID>k__BackingField: 0
-    <Size>k__BackingField: {x: 0, y: 0}
-    <Prefab>k__BackingField: {fileID: 5398359671650721046, guid: ab80bab234453fd4d8d90471b8d30216, type: 3}
-  - <Name>k__BackingField: House
     <ID>k__BackingField: 1
-    <Size>k__BackingField: {x: 0, y: 0}
-    <Prefab>k__BackingField: {fileID: 9154484114684076519, guid: cabe25d0dd9a23f4490cb355951a592b, type: 3}
-  - <Name>k__BackingField: Forest
+    <Size>k__BackingField: {x: 1, y: 1}
+    <Prefab>k__BackingField: {fileID: 5398359671650721046, guid: ab80bab234453fd4d8d90471b8d30216, type: 3}
+  - <Name>k__BackingField: Majory
     <ID>k__BackingField: 2
-    <Size>k__BackingField: {x: 0, y: 0}
+    <Size>k__BackingField: {x: 1, y: 1}
+    <Prefab>k__BackingField: {fileID: 6096486224627891382, guid: bd0f4a183261acb488686f9c2750651b, type: 3}
+  - <Name>k__BackingField: Forest
+    <ID>k__BackingField: 3
+    <Size>k__BackingField: {x: 1, y: 1}
     <Prefab>k__BackingField: {fileID: 7955552494791018851, guid: 7c9172f343554c14184c0042ffc25ca3, type: 3}
   - <Name>k__BackingField: Majory
-    <ID>k__BackingField: 3
-    <Size>k__BackingField: {x: 0, y: 0}
+    <ID>k__BackingField: 4
+    <Size>k__BackingField: {x: 1, y: 1}
     <Prefab>k__BackingField: {fileID: 6096486224627891382, guid: bd0f4a183261acb488686f9c2750651b, type: 3}

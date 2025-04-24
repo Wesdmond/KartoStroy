@@ -16,10 +16,13 @@ public class PlayerSystem : Singleton<PlayerSystem>
     [SerializeField] public TMP_Text MoneyText;
     [SerializeField] public TMP_Text EnergyText;
 
+    [HideInInspector] public AudioSource mainSource;
+
     public void Start()
     {
         EnergyText.SetText(Energy.ToString());
         MoneyText.SetText(Money.ToString());
+        mainSource = GetComponentInChildren<AudioSource>();
     }
 
     void Update()

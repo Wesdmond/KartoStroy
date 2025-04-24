@@ -30,6 +30,9 @@ public class HorizontalCardHolder : MonoBehaviour
     [SerializeField] private float hideCardOffsetPercentage = 0.3f;
     [HideInInspector] public UnityEvent<CardView> newItemSelected = new UnityEvent<CardView>();
 
+    [Header("Audio")]
+    [SerializeField] private AudioClip cardDragSound;
+
     void Start()
     {
         rect = GetComponent<RectTransform>();
@@ -40,14 +43,30 @@ public class HorizontalCardHolder : MonoBehaviour
     private void BeginDrag(CardView card)
     {
         draggingCard = card;
+        PlayerSystem.Instance.mainSource.PlayOneShot(cardDragSound);
     }
-
-
+    
+    // TODO: MakeParameters
+    private bool CheckIsCanPlayCard()
+    {
+        float percentageOfScreenHeight = 0.40f;
+        if (Input.mousePosition.y > percentageOfScreenHeight * Screen.height)
+        {
+            return true;
+        }
+        return false;
+    }
+    
     void EndDrag(CardView card)
     {
         if (draggingCard == null)
             return;
 
+        if (CheckIsCanPlayCard())
+        {
+            card.PerformEffect();
+        }
+        
         draggingCard.transform.DOLocalMove(draggingCard.selected ? new Vector3(0,draggingCard.selectionOffset,0) : Vector3.zero, tweenCardReturn ? .15f : 0).SetEase(Ease.OutBack);
 
         rect.sizeDelta += Vector2.right;

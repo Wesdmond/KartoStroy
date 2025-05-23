@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f970e39f21800da4b9143dafa6210aa5, type: 3}
   m_Name: New Place Building Effect
   m_EditorClassIdentifier: 
-  buildingId: 0
+  buildingId: 3
   placementDuration: 1

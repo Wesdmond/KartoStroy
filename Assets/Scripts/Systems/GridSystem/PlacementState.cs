@@ -75,7 +75,7 @@ public class PlacementState : IBuildingState
         }
         // soundFeedback.PlaySound(SoundType.Place);
         int index = objectPlacer.PlaceObject(database.objectsData[selectedObjectIndex].Prefab,
-            grid.CellToWorld(gridPosition));
+            grid.GetCellCenterWorld(gridPosition));
 
         GridData selectedData = database.objectsData[selectedObjectIndex].ID == 0 ?
             floorData :
@@ -88,7 +88,7 @@ public class PlacementState : IBuildingState
 
         Debug.Log($"Placed building with ID {database.objectsData[selectedObjectIndex].ID} at {gridPosition}");
 
-        previewSystem.UpdatePosition(grid.CellToWorld(gridPosition), false);
+        previewSystem.UpdatePosition(grid.GetCellCenterWorld(gridPosition), false);
     }
 
     private bool CheckPlacementValidity(Vector3Int gridPosition, int selectedObjectIndex)
@@ -103,7 +103,6 @@ public class PlacementState : IBuildingState
     public void UpdateState(Vector3Int gridPosition)
     {
         bool placementValidity = CheckPlacementValidity(gridPosition, selectedObjectIndex);
-
-        previewSystem.UpdatePosition(grid.CellToWorld(gridPosition), placementValidity);
+        previewSystem.UpdatePosition(grid.GetCellCenterWorld(gridPosition), placementValidity);
     }
 }

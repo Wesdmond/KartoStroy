@@ -104,13 +104,16 @@ public class PlacementSystem : Singleton<PlacementSystem>
     {
         if (buildingState == null)
             return;
-        Vector3 mousePosition = mainCamera.ScreenToWorldPoint(Input.mousePosition);
-        mousePosition.z = mainCamera.nearClipPlane;
+
+        // Используем InputManager для получения координаты мыши на карте
+        Vector3 mousePosition = inputManager.GetSelectedMapPosition();
         Vector3Int gridPosition = grid.WorldToCell(mousePosition);
-        if(lastDetectedPosition != gridPosition)
+
+        if (lastDetectedPosition != gridPosition)
         {
             buildingState.UpdateState(gridPosition);
             lastDetectedPosition = gridPosition;
         }
     }
+
 }

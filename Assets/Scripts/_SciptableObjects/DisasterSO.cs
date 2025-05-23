@@ -22,6 +22,7 @@ public class DisasterData
     [field: SerializeField][Range(0f, 1f)] public float magnitude;
     // Описание бедствия (текстовое объяснение эффекта)
     [field: SerializeField] public string description;
+    [field: SerializeField] public bool isMajor { get; private set; } // Масштабная ли катастрофа
     [field: SerializeField] public List<EffectSO> effects;
 }
 

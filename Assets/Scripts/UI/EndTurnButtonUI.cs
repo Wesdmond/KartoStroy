@@ -20,13 +20,26 @@ public class EndTurnButtonUI : MonoBehaviour
     {
         _button.interactable = true;
     }
+
+    private void StartBuildingTurn()
+    {
+        // Start building turn at the end of disaster turn
+        BuildingGA buildingGA = new();
+        if (ActionSystem.Instance != null)
+        {
+            ActionSystem.Instance.Perform(buildingGA);
+        } else
+        {
+            Debug.LogError("ActionSystem not connected to scene");
+        }
+    }
     
     public void OnClick()
     {
         DisasterGA disasterGA = new();
         if (ActionSystem.Instance != null)
         {
-            ActionSystem.Instance.Perform(disasterGA);
+            ActionSystem.Instance.Perform(disasterGA, StartBuildingTurn);
         } else
         {
             Debug.LogError("ActionSystem not connected to scene");

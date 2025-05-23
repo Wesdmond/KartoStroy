@@ -11,7 +11,7 @@ public class ActionSystem : Singleton<ActionSystem>
     private static Dictionary<Type, List<Action<GameAction>>> postSubs = new();
     private static Dictionary<Type, Func<GameAction, IEnumerator>> performers = new();
 
-    public void Perform(GameAction action, System.Action OnPerformFinished = null)
+    public void Perform(GameAction action, Action OnPerformFinished = null)
     {
         if (IsPerforming) return;
         IsPerforming = true;

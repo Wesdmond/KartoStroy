@@ -2106,8 +2106,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4284738692
-  m_fontColor: {r: 0.51696277, g: 0.9245283, b: 0.3866737, a: 1}
+    rgba: 4278190080
+  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -3370,6 +3370,7 @@ Transform:
   - {fileID: 1463192017}
   - {fileID: 723077338}
   - {fileID: 1544863609}
+  - {fileID: 1094581925}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1074445810
@@ -3438,8 +3439,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4284738692
-  m_fontColor: {r: 0.51696277, g: 0.9245283, b: 0.3866737, a: 1}
+    rgba: 4278190080
+  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -3508,6 +3509,54 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1074445810}
   m_CullTransparentMesh: 1
+--- !u!1 &1094581924
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1094581925}
+  - component: {fileID: 1094581926}
+  m_Layer: 0
+  m_Name: BuildingSystem
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1094581925
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1094581924}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1009990382}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1094581926
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1094581924}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b13fbfb7f2f4edd439c3c921b218c269, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  buildingSO: {fileID: 11400000, guid: 795b2c00e0a3fc3428525d7ee789a0e6, type: 2}
+  objectsDatabase: {fileID: 11400000, guid: a9ff56ea0aa81b749bb719144fc26bac, type: 2}
+  furryCampBuildingID: 4
+  randomPortalBuildingID: 3
 --- !u!1 &1176360186
 GameObject:
   m_ObjectHideFlags: 0
@@ -5205,6 +5254,7 @@ MonoBehaviour:
   inputManager: {fileID: 2144490456}
   grid: {fileID: 1731400746}
   database: {fileID: 11400000, guid: a9ff56ea0aa81b749bb719144fc26bac, type: 2}
+  buildingSO: {fileID: 11400000, guid: 795b2c00e0a3fc3428525d7ee789a0e6, type: 2}
   gridVisualization: {fileID: 348547592}
   correctPlacementClip: {fileID: 0}
   wrongPlacementClip: {fileID: 0}

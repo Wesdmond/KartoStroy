@@ -20,4 +20,6 @@ public class BuildingData
     [field: SerializeField] public Sprite icon;
     // Prefab of building for vizualization
     [field: SerializeField] public GameObject prefab;
+    [field: SerializeField] public List<EffectSO> bonuses;
+    [field: SerializeField] public bool isBroken; // Флаг, указывающий, поломано ли здание
 }

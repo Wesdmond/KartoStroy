@@ -226,7 +226,8 @@ public class CardView : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDrag
         Debug.Log(gameObject.name + " is performing effects:    ");
         foreach (var effect in data.effects)
         {
-            effect.Perform();
+            Debug.Log(effect.name);
+            StartCoroutine(effect.Perform());
         }
     }
 

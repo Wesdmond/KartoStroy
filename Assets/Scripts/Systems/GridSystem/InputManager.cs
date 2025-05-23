@@ -26,7 +26,6 @@ public class InputManager : MonoBehaviour
             switch (input)
             {
                 case "e": placementSystem.StartPlacement(1); break;
-                case "q": placementSystem.StartRemoving(); break;
                 case "1": ChangePlacementID(1); break;
                 case "2": ChangePlacementID(2); break;
                 case "3": ChangePlacementID(3); break;
@@ -38,6 +37,7 @@ public class InputManager : MonoBehaviour
         if (Input.GetMouseButtonDown(0))
         {
             OnClicked?.Invoke();
+            OnExit?.Invoke();
         }
            
         if (Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyUp(KeyCode.Tab))
@@ -53,6 +53,8 @@ public class InputManager : MonoBehaviour
     public Vector3 GetSelectedMapPosition()
     {
         Vector3 mousePos = Input.mousePosition;
+        Vector3 newMousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        mousePos.z = sceneCamera.nearClipPlane;
         mousePos.z = sceneCamera.nearClipPlane;
         Ray ray = sceneCamera.ScreenPointToRay(mousePos);
         RaycastHit hit;

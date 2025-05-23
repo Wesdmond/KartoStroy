@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class PlacementSystem : MonoBehaviour
+public class PlacementSystem : Singleton<PlacementSystem>
 {
     [SerializeField]
     private InputManager inputManager;
@@ -15,6 +15,9 @@ public class PlacementSystem : MonoBehaviour
     private ObjectsDatabaseSO database;
 
     [SerializeField]
+    private BuildingSO buildingSO; // Добавляем BuildingSO для проверки данных здания
+
+    [SerializeField]
     private GameObject gridVisualization;
 
     [SerializeField]
@@ -22,7 +25,7 @@ public class PlacementSystem : MonoBehaviour
     [SerializeField]
     private AudioSource source;
 
-    private GridData floorData, furnitureData;
+    public GridData floorData, furnitureData;
 
     [SerializeField]
     private PreviewSystem preview;
@@ -55,6 +58,7 @@ public class PlacementSystem : MonoBehaviour
                                            grid,
                                            preview,
                                            database,
+                                           buildingSO, // Передаём BuildingSO
                                            floorData,
                                            furnitureData,
                                            objectPlacer);
@@ -65,7 +69,7 @@ public class PlacementSystem : MonoBehaviour
     public void StartRemoving()
     {
         StopPlacement();
-        gridVisualization.SetActive(true) ;
+        gridVisualization.SetActive(true);
         buildingState = new RemovingState(grid, preview, floorData, furnitureData, objectPlacer, soundFeedback);
         inputManager.OnClicked += PlaceStructure;
         inputManager.OnExit += StopPlacement;
@@ -82,16 +86,14 @@ public class PlacementSystem : MonoBehaviour
         Vector3Int gridPosition = grid.WorldToCell(mousePosition);
 
         buildingState.OnAction(gridPosition);
-
     }
 
     private void StopPlacement()
     {
         // soundFeedback.PlaySound(SoundType.Click);
-        if (buildingState == null)
-            return;
+        if (buildingState != null)
+            buildingState.EndState();
         gridVisualization.SetActive(false);
-        buildingState.EndState();
         inputManager.OnClicked -= PlaceStructure;
         inputManager.OnExit -= StopPlacement;
         lastDetectedPosition = Vector3Int.zero;
@@ -102,7 +104,6 @@ public class PlacementSystem : MonoBehaviour
     {
         if (buildingState == null)
             return;
-        // Vector3 mousePosition = inputManager.GetSelectedMapPosition();
         Vector3 mousePosition = mainCamera.ScreenToWorldPoint(Input.mousePosition);
         mousePosition.z = mainCamera.nearClipPlane;
         Vector3Int gridPosition = grid.WorldToCell(mousePosition);
@@ -111,6 +112,5 @@ public class PlacementSystem : MonoBehaviour
             buildingState.UpdateState(gridPosition);
             lastDetectedPosition = gridPosition;
         }
-        
     }
 }

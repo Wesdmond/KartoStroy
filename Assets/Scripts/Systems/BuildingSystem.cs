@@ -4,17 +4,22 @@ using UnityEngine;
 
 public class BuildingSystem : Singleton<BuildingSystem>
 {
-    [SerializeField] private BuildingSO buildingSO;
     [SerializeField] private ObjectsDatabaseSO objectsDatabase;
-    [SerializeField] private GridData furnitureData; // Данные о размещённых зданиях
-    [SerializeField] private int furryCampBuildingID = 3; // ID "Лагерь фурри"
-    [SerializeField] private int randomPortalBuildingID = 4; // ID "Портал случайностей"
+    [SerializeField] private GridData furnitureData;
+    [SerializeField] private int furryCampBuildingID = 4;
+    [SerializeField] private int randomPortalBuildingID = 5;
 
-    void Awake()
-    {
-        // furnitureData = PlacementSystem.Instance.furnitureData;
-    }
-    
+    private bool isBloodMoonActive = false;
+    private bool isZagarskAwakeningActive = false;
+    private int bloodMoonTurnsRemaining = 0;
+    private int zagarskTurnsRemaining = 0;
+    private bool gameEnded = false;
+
+    public bool IsBloodMoonActive => isBloodMoonActive;
+    public bool IsZagarskAwakeningActive => isZagarskAwakeningActive;
+    public int BloodMoonTurnsRemaining => bloodMoonTurnsRemaining;
+    public int ZagarskTurnsRemaining => zagarskTurnsRemaining;
+
     void OnEnable()
     {
         ActionSystem.AttachPerformer<BuildingGA>(BuildingPerformer);
@@ -25,7 +30,6 @@ public class BuildingSystem : Singleton<BuildingSystem>
         ActionSystem.DetachPerformer<BuildingGA>();
     }
 
-    // Явный метод для вызова эффектов
     public void ApplyBuildingEffects()
     {
         Debug.Log("Applying building effects");
@@ -34,18 +38,17 @@ public class BuildingSystem : Singleton<BuildingSystem>
 
     private IEnumerator BuildingPerformer(BuildingGA buildingGA)
     {
+        Debug.Log("Starting Building Turn");
         Debug.Log("Building Turn: Starting effect processing");
 
-        if (buildingSO == null || objectsDatabase == null || PlacementSystem.Instance.furnitureData == null)
+        if (objectsDatabase == null || PlacementSystem.Instance.furnitureData == null)
         {
             Debug.LogError("BuildingSystem: Required references are null");
-            if (buildingSO == null) print("buildingSO");
             if (objectsDatabase == null) print("objectsDatabase");
             if (furnitureData == null) print("furnitureData");
             yield break;
         }
 
-        // Собираем эффекты от всех неполоманных зданий
         List<EffectSO> bonusesToApply = new List<EffectSO>();
         var placedObjects = PlacementSystem.Instance.furnitureData.GetAllPlacedObjects();
         Debug.Log($"Found {placedObjects.Count} placed objects");
@@ -68,13 +71,6 @@ public class BuildingSystem : Singleton<BuildingSystem>
 
             Debug.Log($"Processing building with ID {objectID}, Prefab: {objectData.Prefab.name}");
 
-            // BuildingData buildingData = buildingSO.buildingsData.;
-            // if (buildingData == null)
-            // {
-            //     Debug.LogWarning($"No BuildingData found for prefab {objectData.Prefab.name} in BuildingSO");
-            //     continue;
-            // }
-
             if (objectData.bonuses == null || objectData.bonuses.Count == 0)
             {
                 Debug.Log($"No bonuses for building {objectData.Name}");
@@ -85,7 +81,6 @@ public class BuildingSystem : Singleton<BuildingSystem>
             foreach (var bonus in objectData.bonuses)
             {
                 print("test2");
-                // Передаём контекст для эффектов, зависящих от соседства
                 if (bonus is DailyMoneyEffect dailyMoney)
                 {
                     dailyMoney.SetContext(placedObject.occupiedPositions[0], objectID, this);
@@ -100,7 +95,6 @@ public class BuildingSystem : Singleton<BuildingSystem>
             }
         }
 
-        // Выполняем все эффекты
         Debug.Log($"Applying {bonusesToApply.Count} effects");
         foreach (var effect in bonusesToApply)
         {
@@ -108,22 +102,41 @@ public class BuildingSystem : Singleton<BuildingSystem>
             yield return effect.Perform();
         }
 
+        // Уменьшаем счетчики ходов для катастроф
+        if (isBloodMoonActive)
+        {
+            bloodMoonTurnsRemaining--;
+            Debug.Log($"BloodMoon: Turns remaining: {bloodMoonTurnsRemaining}");
+            if (bloodMoonTurnsRemaining <= 0)
+            {
+                SetBloodMoonActive(false);
+            }
+        }
+
+        if (isZagarskAwakeningActive && !gameEnded)
+        {
+            zagarskTurnsRemaining--;
+            Debug.Log($"ZagarskAwakening: Turns remaining: {zagarskTurnsRemaining}");
+            if (zagarskTurnsRemaining <= 0)
+            {
+                EndGame();
+            }
+        }
+
         Debug.Log("Building Turn: Effect processing completed");
+        Debug.Log("Start Player Turn");
     }
 
-    // Проверка, является ли здание лагерем фурри
     public bool IsFurryCamp(int objectID)
     {
         return objectID == furryCampBuildingID;
     }
 
-    // Проверка, является ли здание порталом случайностей
     public bool IsRandomPortal(int objectID)
     {
         return objectID == randomPortalBuildingID;
     }
 
-    // Получение ID соседних зданий
     public List<int> GetNeighborBuildingIDs(Vector3Int gridPosition)
     {
         List<Vector3Int> neighborPositions = PlacementSystem.Instance.furnitureData.GetNeighborPositions(gridPosition);
@@ -142,5 +155,26 @@ public class BuildingSystem : Singleton<BuildingSystem>
         }
         Debug.Log($"Found {neighborIDs.Count} neighbors at {gridPosition}");
         return neighborIDs;
+    }
+
+    public void SetBloodMoonActive(bool active, int turns = 3)
+    {
+        isBloodMoonActive = active;
+        bloodMoonTurnsRemaining = active ? turns : 0;
+        Debug.Log($"BuildingSystem: Blood Moon {(active ? $"activated with {turns} turns" : "deactivated")}");
+    }
+
+    public void SetZagarskAwakeningActive(bool active, int turns = 3)
+    {
+        isZagarskAwakeningActive = active;
+        zagarskTurnsRemaining = active ? turns : 0;
+        Debug.Log($"BuildingSystem: Zagarsk Awakening {(active ? $"activated with {turns} turns" : "deactivated")}");
+    }
+
+    private void EndGame()
+    {
+        gameEnded = true;
+        Debug.Log("BuildingSystem: Game Over due to Zagarsk Awakening!");
+        // Реализуйте логику завершения игры, например, вызов UI или GameManager
     }
 }

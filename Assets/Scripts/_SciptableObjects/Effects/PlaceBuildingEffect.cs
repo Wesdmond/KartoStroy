@@ -5,7 +5,7 @@ using UnityEngine;
 public class PlaceBuildingEffect : EffectSO
 {
     [SerializeField] private int buildingId; // ID здания для размещения
-    [SerializeField] private float placementDuration = 1f; // Длительность эффекта (для анимации)
+    [SerializeField] private float placementDuration = 0f; // Длительность эффекта (для анимации)
     // private BuildingSystem buildingSystem;
 
     private void Awake()

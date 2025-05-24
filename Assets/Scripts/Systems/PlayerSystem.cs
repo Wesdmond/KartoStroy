@@ -1,4 +1,6 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using DG.Tweening;
 using TMPro;
 using UnityEngine;
@@ -7,7 +9,7 @@ using UnityEngine.UI;
 public class PlayerSystem : Singleton<PlayerSystem>
 {
     [Header("Player Parameters")]
-    [SerializeField] private int Energy = 3;
+    [SerializeField] private int Energy = 10;
     [SerializeField] private int Money = 100;
     [SerializeField] private int MaxEnergyLimit = 10;
     [SerializeField] private float ChangingDelay = 1.0f;
@@ -17,6 +19,7 @@ public class PlayerSystem : Singleton<PlayerSystem>
     [SerializeField] public TMP_Text EnergyText;
 
     [HideInInspector] public AudioSource mainSource;
+    [SerializeField]  public HorizontalCardHolder horizontalCardHolder;
 
     public void Start()
     {
@@ -28,6 +31,32 @@ public class PlayerSystem : Singleton<PlayerSystem>
     void Update()
     {
         
+    }
+
+    public IEnumerator TakeNewCards()
+    {
+        yield return new WaitForSeconds(0.3f);
+        horizontalCardHolder.FillHand();
+    }
+
+    public void HideCards()
+    {
+        horizontalCardHolder.HideCards();
+    }
+
+    public void ShowCards()
+    {
+        horizontalCardHolder.ShowCards();
+    }
+    
+    void OnEnable()
+    {
+        ActionSystem.AttachPerformer<PlayerCardGA>(PerformCard);
+    }
+
+    void OnDisable()
+    {
+        ActionSystem.DetachPerformer<PlayerCardGA>();
     }
 
     public void ChangeEnergy(int amount, float delay = float.NaN)
@@ -61,5 +90,32 @@ public class PlayerSystem : Singleton<PlayerSystem>
     public void ResetEnergy()
     {
         Energy = MaxEnergyLimit;
+    }
+    
+    private IEnumerator PerformCard(PlayerCardGA cardAction)
+    {
+        List<EffectSO> effects = cardAction.cardData.effects;
+        if (effects != null)
+        {
+            foreach (var effect in effects)
+            {
+                Debug.Log($"Performing card effect: {effect.name}");
+                yield return effect.Perform();
+            }
+        }
+        else
+        {
+            Debug.LogError("PlayerCardPerformer: CardEffect is null");
+        }
+    }
+}
+
+public class PlayerCardGA : GameAction
+{
+    public CardData cardData { get; private set; }
+
+    public PlayerCardGA(CardData cardData)
+    {
+        this.cardData = cardData;
     }
 }

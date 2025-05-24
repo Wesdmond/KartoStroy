@@ -5,9 +5,14 @@ using UnityEngine;
 public class DisasterSystem : MonoBehaviour
 {
     [SerializeField] private DisasterSO disasterSO;
+    [SerializeField] private int mayorOfficeID = 1; // ID мэрии
+    [SerializeField] private List<int> houseBuildingIDs = new List<int> { 2 }; // ID домов
+    [SerializeField] private float destructionThresholdPercent = 50f; // Процент разрушенных домов для поражения
     private List<DisasterData> disasters;
     private List<DisasterData> disastersRandom = new();
     private int forecastDays = 1;
+    private int turnCount = 0; // Счетчик ходов
+    private bool gameEnded = false; // Флаг окончания игры
 
     void Start()
     {
@@ -24,6 +29,7 @@ public class DisasterSystem : MonoBehaviour
             int random = Random.Range(0, disasters.Count);
             disastersRandom.Add(disasters[random]);
             disasters.RemoveAt(random);
+            return;
         }
         disasters = new(disasterSO.disasterData);
     }
@@ -40,28 +46,94 @@ public class DisasterSystem : MonoBehaviour
 
     private IEnumerator EnemyTurnPerformer(DisasterGA disasterGA)
     {
-        Debug.Log("Disaster Turn");
+        if (gameEnded) yield break;
+
+        Debug.Log($"Disaster Turn: Turn {++turnCount}");
+
+        // Проверяем условие победы
+        if (turnCount >= 7)
+        {
+            EndGame(true);
+            yield break;
+        }
+
+        // Получаем состояние зданий до выполнения катастроф
+        BuildingSystem buildingSystem = BuildingSystem.Instance;
+        if (buildingSystem == null)
+        {
+            Debug.LogError("DisasterSystem: BuildingSystem is null");
+            yield break;
+        }
+
+        var placedObjects = PlacementSystem.Instance.furnitureData.GetAllPlacedObjects();
+        int initialHouseCount = 0;
+        foreach (var obj in placedObjects)
+        {
+            if (houseBuildingIDs.Contains(obj.ID) && !PlacementSystem.Instance.furnitureData.IsBuildingBroken(obj.occupiedPositions[0]))
+            {
+                initialHouseCount++;
+            }
+        }
+        
+        Debug.Log("Disaster Turn: Starting effect processing");
         yield return new WaitForSeconds(2f);
         if (disastersRandom == null)
         {
             Debug.LogError("DisasterSystem: disastersRandom is null");
             yield break;
         }
+        
+        // foreach (DisasterData disaster in disastersRandom)
+        // {
+        //     if (!disaster.isMajor)
+        //     {
+        //         bool prevented = false; // Логика святилища
+        //         if (prevented) continue;
+        //     }
+        //
+        //     foreach (EffectSO effect in disaster.effects)
+        //     {
+        //         Debug.Log($"Performing disaster effect: {effect.name}");
+        //         yield return effect.Perform();
+        //     }
+        // }
 
-        foreach (DisasterData disaster in disastersRandom)
+        Debug.Log("End Disaster Turn");
+
+        // Проверяем состояние мэрии
+        bool mayorOfficeBroken = false;
+        foreach (var obj in placedObjects)
         {
-            if (!disaster.isMajor)
+            if (obj.ID == mayorOfficeID && PlacementSystem.Instance.furnitureData.IsBuildingBroken(obj.occupiedPositions[0]))
             {
-                bool prevented = false; // Здесь можно интегрировать логику святилища
-                if (prevented) continue;
-            }
-
-            foreach (EffectSO effect in disaster.effects)
-            {
-                yield return effect.Perform();
+                mayorOfficeBroken = true;
+                break;
             }
         }
-        Debug.Log("End Disaster Turn");
+
+        if (mayorOfficeBroken)
+        {
+            EndGame(false, "Mayor Office is broken");
+            yield break;
+        }
+
+        // Проверяем процент разрушенных домов
+        int finalHouseCount = 0;
+        foreach (var obj in placedObjects)
+        {
+            if (houseBuildingIDs.Contains(obj.ID) && !PlacementSystem.Instance.furnitureData.IsBuildingBroken(obj.occupiedPositions[0]))
+            {
+                finalHouseCount++;
+            }
+        }
+
+        int housesDestroyed = initialHouseCount - finalHouseCount;
+        float destructionPercent = initialHouseCount > 0 ? (housesDestroyed / (float)initialHouseCount) * 100f : 0f;
+        if (destructionPercent >= destructionThresholdPercent)
+        {
+            EndGame(false, $"{destructionPercent:F1}% of houses destroyed in one turn");
+            yield break;
+        }
     }
 
     public void PreventNonMajorDisaster()
@@ -72,11 +144,10 @@ public class DisasterSystem : MonoBehaviour
             Debug.Log("DisasterSystem: Non-major disaster prevented");
         }
     }
-    
+
     public void SetForecastDays(int days)
     {
         forecastDays = days;
-        // Здесь можно обновить UI или отправить событие для отображения
         Debug.Log($"DisasterSystem: Forecast set to {days} days");
     }
 
@@ -93,5 +164,20 @@ public class DisasterSystem : MonoBehaviour
                 Debug.Log("DisasterSystem: Disaster replaced");
             }
         }
+    }
+
+    private void EndGame(bool isVictory, string reason = "")
+    {
+        gameEnded = true;
+        if (isVictory)
+        {
+            Debug.Log("DisasterSystem: Victory! Survived 7 turns");
+        }
+        else
+        {
+            Debug.Log($"DisasterSystem: Game Over! Reason: {reason}");
+        }
+        // Реализуйте логику завершения игры, например, вызов UI или GameManager
+        // GameManager.Instance.EndGame(isVictory);
     }
 }

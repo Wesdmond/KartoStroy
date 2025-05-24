@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -27,11 +28,17 @@ public class EndTurnButtonUI : MonoBehaviour
         BuildingGA buildingGA = new();
         if (ActionSystem.Instance != null)
         {
-            ActionSystem.Instance.Perform(buildingGA);
+            ActionSystem.Instance.Perform(buildingGA, StartPlayerTurn);
         } else
         {
             Debug.LogError("ActionSystem not connected to scene");
         }
+    }
+
+    private void StartPlayerTurn()
+    {
+        PlayerSystem.Instance.ShowCards();
+        StartCoroutine(PlayerSystem.Instance.TakeNewCards());
     }
     
     public void OnClick()
@@ -39,6 +46,7 @@ public class EndTurnButtonUI : MonoBehaviour
         DisasterGA disasterGA = new();
         if (ActionSystem.Instance != null)
         {
+            PlayerSystem.Instance.HideCards();
             ActionSystem.Instance.Perform(disasterGA, StartBuildingTurn);
         } else
         {

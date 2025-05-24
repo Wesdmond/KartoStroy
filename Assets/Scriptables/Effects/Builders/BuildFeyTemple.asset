@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f970e39f21800da4b9143dafa6210aa5, type: 3}
-  m_Name: New Place Building Effect
+  m_Name: BuildFeyTemple
   m_EditorClassIdentifier: 
-  buildingId: 3
-  placementDuration: 1
+  buildingId: 8
+  placementDuration: 0

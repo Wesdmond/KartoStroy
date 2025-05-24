@@ -29,8 +29,8 @@ public class PlayCardButton : MonoBehaviour
 
     public void PlayCard()
     {
-        if (HandScript.GetSelectedCard() != null)
-            HandScript.GetSelectedCard().PerformEffect();
+        if (HandScript.GetSelectedCard() != null) return;
+        // HandScript.GetSelectedCard().PerformEffect();
         else
         {
             Debug.LogWarning(gameObject.name + "card is not selected for 'Play Button'");

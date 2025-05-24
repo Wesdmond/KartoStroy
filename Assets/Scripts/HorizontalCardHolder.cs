@@ -47,12 +47,20 @@ public class HorizontalCardHolder : MonoBehaviour
     }
     
     // TODO: MakeParameters
-    private bool CheckIsCanPlayCard()
+    private bool CheckIsCanPlayCard(CardView card)
     {
         float percentageOfScreenHeight = 0.40f;
         if (Input.mousePosition.y > percentageOfScreenHeight * Screen.height)
         {
-            return true;
+            if ((PlayerSystem.Instance.GetEnergy() - card.data.Energy) < 0)
+            {
+                return false;
+            }
+            else
+            {
+                PlayerSystem.Instance.ChangeEnergy(-card.data.Energy);
+                return true;
+            }
         }
         return false;
     }
@@ -61,17 +69,18 @@ public class HorizontalCardHolder : MonoBehaviour
     {
         if (draggingCard == null)
             return;
-
-        if (CheckIsCanPlayCard())
-        {
-            card.PerformEffect();
-        }
         
         draggingCard.transform.DOLocalMove(draggingCard.selected ? new Vector3(0,draggingCard.selectionOffset,0) : Vector3.zero, tweenCardReturn ? .15f : 0).SetEase(Ease.OutBack);
 
         rect.sizeDelta += Vector2.right;
         rect.sizeDelta -= Vector2.right;
 
+        if (CheckIsCanPlayCard(card))
+        {
+            Debug.Log(gameObject.name + " is performing effects:    ");
+            PlayerCardGA playerGA = new PlayerCardGA(card.data);
+            ActionSystem.Instance.Perform(playerGA, () =>  DeleteCard(card));
+        }
         draggingCard = null;
 
     }
@@ -86,7 +95,7 @@ public class HorizontalCardHolder : MonoBehaviour
         hoveredCard = null;
     }
 
-    void HideCards()
+    public void HideCards()
     {
         foreach (CardView card in cards)
         {
@@ -95,7 +104,7 @@ public class HorizontalCardHolder : MonoBehaviour
         rect.DOAnchorPos(rect.anchoredPosition - new Vector2(0f, hideCardOffsetPercentage * Screen.height), .2f).SetEase(Ease.InBack);
     }
 
-    void ShowCards()
+    public void ShowCards()
     {
         rect.DOAnchorPos(rect.anchoredPosition + new Vector2(0f, hideCardOffsetPercentage * Screen.height), .2f).SetEase(Ease.InBack).OnComplete(SetCardsFlag);
         void SetCardsFlag()
@@ -203,14 +212,20 @@ public class HorizontalCardHolder : MonoBehaviour
         }
     }
 
-    public void DeleteCard(int index)
+    public void DeleteCard(CardView card)
     {
-        Destroy(cards[index].transform.parent.gameObject);
-        cards.Remove(hoveredCard);
+        if (selectedCard == card) selectedCard = null;
+        if (draggingCard == card) draggingCard = null;
+        if (hoveredCard == card) hoveredCard = null;
+        Destroy(card.transform.parent.gameObject);
+        cards.Remove(card);
     }
 
     public void DeleteAllCards()
     {
+        selectedCard = null;
+        draggingCard = null;
+        hoveredCard = null;
         foreach (CardView card in cards)
         {
             Destroy(card.transform.parent.gameObject);

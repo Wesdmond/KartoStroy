@@ -3533,6 +3533,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   disasterSO: {fileID: 11400000, guid: 69aba2cd6238dc9498fe85345f84cfed, type: 2}
+  mayorOfficeID: 1
+  houseBuildingIDs: 02000000
+  destructionThresholdPercent: 50
 --- !u!1 &842170167
 GameObject:
   m_ObjectHideFlags: 0
@@ -3823,10 +3826,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b13fbfb7f2f4edd439c3c921b218c269, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  buildingSO: {fileID: 11400000, guid: 795b2c00e0a3fc3428525d7ee789a0e6, type: 2}
   objectsDatabase: {fileID: 11400000, guid: a9ff56ea0aa81b749bb719144fc26bac, type: 2}
   furryCampBuildingID: 4
-  randomPortalBuildingID: 3
+  randomPortalBuildingID: 5
 --- !u!1 &1176360186
 GameObject:
   m_ObjectHideFlags: 0
@@ -4470,13 +4472,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d62b2f15e89e4554090c19eeb2e3c4bc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Energy: 3
+  Energy: 10
   Money: 100
   MaxEnergyLimit: 10
   ChangingDelay: 1
   MoneyText: {fileID: 1074445812}
   EnergyText: {fileID: 271346155}
   mainSource: {fileID: 0}
+  horizontalCardHolder: {fileID: 1522210044}
 --- !u!82 &1544863611
 AudioSource:
   m_ObjectHideFlags: 0

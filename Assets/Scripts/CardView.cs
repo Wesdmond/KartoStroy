@@ -221,16 +221,6 @@ public class CardView : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDrag
         }
     }
 
-    public void PerformEffect()
-    {
-        Debug.Log(gameObject.name + " is performing effects:    ");
-        foreach (var effect in data.effects)
-        {
-            Debug.Log(effect.name);
-            StartCoroutine(effect.Perform());
-        }
-    }
-
     public int SiblingAmount()
     {
         return transform.parent.CompareTag("Slot") ? transform.parent.parent.childCount - 1 : 0;

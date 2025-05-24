@@ -84,7 +84,6 @@ public class PlacementSystem : Singleton<PlacementSystem>
         }
         Vector3 mousePosition = inputManager.GetSelectedMapPosition();
         Vector3Int gridPosition = grid.WorldToCell(mousePosition);
-
         buildingState.OnAction(gridPosition);
     }
 
@@ -108,7 +107,6 @@ public class PlacementSystem : Singleton<PlacementSystem>
         // Используем InputManager для получения координаты мыши на карте
         Vector3 mousePosition = inputManager.GetSelectedMapPosition();
         Vector3Int gridPosition = grid.WorldToCell(mousePosition);
-
         if (lastDetectedPosition != gridPosition)
         {
             buildingState.UpdateState(gridPosition);

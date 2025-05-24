@@ -5,9 +5,9 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "Effects/DailyMoneyEffect")]
 public class DailyMoneyEffect : EffectSO
 {
-    [SerializeField] private int baseMoneyAmount = 20; // Базовое количество денег
-    [SerializeField] private int bonusPerNeighborCamp = 10; // Бонус за каждый соседний лагерь
-    [SerializeField] private int portalBonus = 15; // Бонус от соседнего портала
+    [SerializeField] private int baseMoneyAmount = 20;
+    [SerializeField] private int bonusPerNeighborCamp = 10;
+    [SerializeField] private int portalBonus = 15;
 
     private Vector3Int gridPosition;
     private int objectID;
@@ -28,9 +28,14 @@ public class DailyMoneyEffect : EffectSO
             yield break;
         }
 
+        if (bonusSystem.IsBloodMoonActive)
+        {
+            Debug.Log($"DailyMoneyEffect: Blocked by Blood Moon for object ID {objectID}");
+            yield break;
+        }
+
         int totalMoney = baseMoneyAmount;
 
-        // Проверяем соседние клетки
         List<int> neighborIDs = bonusSystem.GetNeighborBuildingIDs(gridPosition);
         int neighborCamps = 0;
         bool hasPortal = false;
@@ -47,10 +52,8 @@ public class DailyMoneyEffect : EffectSO
             }
         }
 
-        // Увеличиваем заработок за соседние лагеря
         totalMoney += neighborCamps * bonusPerNeighborCamp;
 
-        // Увеличиваем заработок, если рядом есть портал
         if (hasPortal)
         {
             totalMoney += portalBonus;

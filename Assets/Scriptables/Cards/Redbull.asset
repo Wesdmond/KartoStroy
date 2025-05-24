@@ -19,3 +19,5 @@ MonoBehaviour:
   <Energy>k__BackingField: 0
   <ShopPrice>k__BackingField: 120
   <Sprite>k__BackingField: {fileID: 21300000, guid: 5c82bbfe0bf9a784986a49322a658a7f, type: 3}
+  effects:
+  - {fileID: 11400000, guid: bb3e4e76063c04f46a0d8f2ba5c89c8b, type: 2}

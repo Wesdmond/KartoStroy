@@ -15,7 +15,8 @@ MonoBehaviour:
   <Title>k__BackingField: "\u0421\u0432\u044F\u0442\u0438\u043B\u0438\u0449\u0435
     \u0434\u0440\u0435\u0432\u043D\u0438\u0445 \u0444\u0435\u0439"
   <Description>k__BackingField: 
-  <Energy>k__BackingField: 0
+  <Energy>k__BackingField: 1
   <ShopPrice>k__BackingField: 0
   <Sprite>k__BackingField: {fileID: 21300000, guid: b1f7eb6d813e3f247b12151070345d75, type: 3}
-  effects: []
+  effects:
+  - {fileID: 11400000, guid: 1230664f0763aeb42b2a2807b37bdfe7, type: 2}

@@ -28,17 +28,17 @@ public class EndTurnButtonUI : MonoBehaviour
         BuildingGA buildingGA = new();
         if (ActionSystem.Instance != null)
         {
-            ActionSystem.Instance.Perform(buildingGA, StartPlayerTurn);
+            ActionSystem.Instance.Perform(buildingGA, () => StartCoroutine(StartPlayerTurn()));
         } else
         {
             Debug.LogError("ActionSystem not connected to scene");
         }
     }
 
-    private void StartPlayerTurn()
+    private IEnumerator StartPlayerTurn()
     {
-        PlayerSystem.Instance.ShowCards();
-        StartCoroutine(PlayerSystem.Instance.TakeNewCards());
+        yield return PlayerSystem.Instance.ShowCards();
+        PlayerSystem.Instance.TakeNewCards();
     }
     
     public void OnClick()

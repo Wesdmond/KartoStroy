@@ -104,16 +104,26 @@ public class HorizontalCardHolder : MonoBehaviour
         rect.DOAnchorPos(rect.anchoredPosition - new Vector2(0f, hideCardOffsetPercentage * Screen.height), .2f).SetEase(Ease.InBack);
     }
 
-    public void ShowCards()
+    public IEnumerator ShowCards()
     {
-        rect.DOAnchorPos(rect.anchoredPosition + new Vector2(0f, hideCardOffsetPercentage * Screen.height), .2f).SetEase(Ease.InBack).OnComplete(SetCardsFlag);
-        void SetCardsFlag()
-        {
-            foreach (CardView card in cards)
+        // Создаем объект для отслеживания завершения анимации
+        bool isAnimationComplete = false;
+
+        rect.DOAnchorPos(rect.anchoredPosition + new Vector2(0f, hideCardOffsetPercentage * Screen.height), 0.2f)
+            .SetEase(Ease.InBack)
+            .OnComplete(() =>
             {
-                card.isHiding = false;
-            }
-        }
+                // Устанавливаем флаг завершения анимации
+                isAnimationComplete = true;
+                // Устанавливаем флаги для карт
+                foreach (CardView card in cards)
+                {
+                    card.isHiding = false;
+                }
+            });
+
+        // Ждем, пока анимация не завершится
+        yield return new WaitUntil(() => isAnimationComplete);
     }
 
     public CardView GetSelectedCard()
@@ -165,7 +175,7 @@ public class HorizontalCardHolder : MonoBehaviour
 
         for (int i = 0; i < cards.Count; i++)
         {
-
+            if (cards[i]  == null) return;
             if (draggingCard.transform.position.x > cards[i].transform.position.x)
             {
                 if (draggingCard.ParentIndex() < cards[i].ParentIndex())
@@ -223,14 +233,14 @@ public class HorizontalCardHolder : MonoBehaviour
 
     public void DeleteAllCards()
     {
-        selectedCard = null;
-        draggingCard = null;
-        hoveredCard = null;
         foreach (CardView card in cards)
         {
             Destroy(card.transform.parent.gameObject);
         }
         cards.Clear();
+        selectedCard = null;
+        draggingCard = null;
+        hoveredCard = null;
     }
     
     public bool IsHandFull()

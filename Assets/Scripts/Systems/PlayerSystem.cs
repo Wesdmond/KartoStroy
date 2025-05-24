@@ -33,9 +33,8 @@ public class PlayerSystem : Singleton<PlayerSystem>
         
     }
 
-    public IEnumerator TakeNewCards()
+    public void TakeNewCards()
     {
-        yield return new WaitForSeconds(0.3f);
         horizontalCardHolder.FillHand();
     }
 
@@ -44,9 +43,9 @@ public class PlayerSystem : Singleton<PlayerSystem>
         horizontalCardHolder.HideCards();
     }
 
-    public void ShowCards()
+    public IEnumerator ShowCards()
     {
-        horizontalCardHolder.ShowCards();
+        yield return horizontalCardHolder.ShowCards();
     }
     
     void OnEnable()

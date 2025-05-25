@@ -4,20 +4,21 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "Effects/DevilsLuckEffect")]
 public class DevilsLuckEffect : EffectSO
 {
-    private BuildingSystem buildingSystem;
+    private DisasterSystem disasterSystem;
+    
 
     public override IEnumerator Perform()
     {
-        buildingSystem = BuildingSystem.Instance;
-        if (buildingSystem == null)
+        disasterSystem = DisasterSystem.Instance;
+        if (disasterSystem == null)
         {
-            Debug.LogError($"DevilsLuckEffect ({name}): BuildingSystem is null");
+            Debug.LogError($"DevilsLuckEffect ({name}): DisasterSystem is null");
             yield break;
         }
 
         Debug.Log("DevilsLuckEffect: Cancelling all active disasters");
-        buildingSystem.SetBloodMoonActive(false);
-        buildingSystem.SetZagarskAwakeningActive(false);
+        disasterSystem.SetBloodMoonActive(false);
+        disasterSystem.SetZagarskAwakeningActive(false);
         yield return null;
     }
 }

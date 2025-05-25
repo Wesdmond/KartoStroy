@@ -11,8 +11,8 @@ public class PlayerSystem : Singleton<PlayerSystem>
     [Header("Player Parameters")]
     [SerializeField] private int Energy = 10;
     [SerializeField] private int Money = 100;
-    [SerializeField] private int MaxEnergyLimit = 10;
-    [SerializeField] private float ChangingDelay = 1.0f;
+    [SerializeField] public int MaxEnergyLimit = 10;
+    [SerializeField] public float ChangingDelay = 1.0f;
     
     [Header("Links to objects")]
     [SerializeField] public TMP_Text MoneyText;

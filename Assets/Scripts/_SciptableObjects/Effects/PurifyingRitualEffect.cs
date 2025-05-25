@@ -4,21 +4,21 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "Effects/PurifyingRitualEffect")]
 public class PurifyingRitualEffect : EffectSO
 {
-    private BuildingSystem buildingSystem;
+    private DisasterSystem disasterSystem;
 
     public override IEnumerator Perform()
     {
-        buildingSystem = BuildingSystem.Instance;
-        if (buildingSystem == null)
+        disasterSystem = DisasterSystem.Instance;
+        if (disasterSystem == null)
         {
-            Debug.LogError($"PurifyingRitualEffect ({name}): BuildingSystem is null");
+            Debug.LogError($"PurifyingRitualEffect ({name}): DisasterSystem is null");
             yield break;
         }
 
-        if (buildingSystem.IsBloodMoonActive)
+        if (disasterSystem.IsBloodMoonActive)
         {
             Debug.Log("PurifyingRitualEffect: Cancelling Blood Moon");
-            buildingSystem.SetBloodMoonActive(false);
+            disasterSystem.SetBloodMoonActive(false);
         }
         else
         {

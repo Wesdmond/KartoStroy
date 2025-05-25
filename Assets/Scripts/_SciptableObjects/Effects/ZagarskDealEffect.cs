@@ -4,21 +4,22 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "Effects/ZagarskDealEffect")]
 public class ZagarskDealEffect : EffectSO
 {
-    private BuildingSystem buildingSystem;
+    private DisasterSystem disasterSystem;
+
 
     public override IEnumerator Perform()
     {
-        buildingSystem = BuildingSystem.Instance;
-        if (buildingSystem == null)
+        disasterSystem = DisasterSystem.Instance;
+        if (disasterSystem == null)
         {
-            Debug.LogError($"ZagarskDealEffect ({name}): BuildingSystem is null");
+            Debug.LogError($"ZagarskDealEffect ({name}): DisasterSystem is null");
             yield break;
         }
 
-        if (buildingSystem.IsZagarskAwakeningActive)
+        if (disasterSystem.IsZagarskAwakeningActive)
         {
             Debug.Log("ZagarskDealEffect: Cancelling Zagarsk Awakening");
-            buildingSystem.SetZagarskAwakeningActive(false);
+            disasterSystem.SetZagarskAwakeningActive(false);
         }
         else
         {

@@ -37,7 +37,7 @@ public class RandomBonusEffect : EffectSO
         else if (randomValue <= moneyChance + cardChance)
         {
             HorizontalCardHolder cardHolder = FindObjectOfType<HorizontalCardHolder>();
-            if (cardHolder != null && !cardHolder.IsHandFull())
+            if (cardHolder != null)
             {
                 int randomCardIndex = Random.Range(0, (int)CardNames.FreezingTime + 1);
                 cardHolder.AddCard((CardNames)randomCardIndex);

@@ -9,7 +9,7 @@ public class GiveEnergyEffectSO : EffectSO
     public override IEnumerator Perform()
     {
         Debug.Log("Give Energy to player");
-        PlayerSystem.Instance.ChangeEnergy(PlayerSystem.Instance.GetEnergy() + amount);
+        PlayerSystem.Instance.ChangeEnergy( amount);
         yield return null;
     }
 }

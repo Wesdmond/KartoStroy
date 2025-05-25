@@ -233,8 +233,10 @@ public class HorizontalCardHolder : MonoBehaviour
 
     public void DeleteAllCards()
     {
+        if (cards.Count <= 0) return;
         foreach (CardView card in cards)
         {
+            if (card == null) continue;
             Destroy(card.transform.parent.gameObject);
         }
         cards.Clear();
@@ -250,11 +252,11 @@ public class HorizontalCardHolder : MonoBehaviour
 
     public void AddCard(CardNames cardName)
     {
-        if (IsHandFull())
-        {
-            Debug.LogWarning("Hand is full");
-            return;
-        }
+        // if (IsHandFull())
+        // {
+        //     Debug.LogWarning("Hand is full");
+        //     return;
+        // }
         CardView card = Instantiate(slotPrefab, transform).GetComponentInChildren<CardView>();
         if (card == null)
         {
@@ -279,6 +281,18 @@ public class HorizontalCardHolder : MonoBehaviour
         card.imageSR = cardData.Sprite;
         card.data = cardData;
         cards.Add(card);
+        
+        StartCoroutine(Frame());
+
+        IEnumerator Frame()
+        {
+            yield return new WaitForSecondsRealtime(.1f);
+            for (int i = 0; i < cards.Count; i++)
+            {
+                if (cards[i].cardVisual != null)
+                    cards[i].cardVisual.UpdateIndex(transform.childCount);
+            }
+        }
     }
 
     private void OnNewCardSelected(CardView cardView, bool isSelected)

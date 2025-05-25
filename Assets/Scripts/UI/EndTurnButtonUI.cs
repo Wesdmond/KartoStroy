@@ -39,6 +39,7 @@ public class EndTurnButtonUI : MonoBehaviour
     {
         yield return PlayerSystem.Instance.ShowCards();
         PlayerSystem.Instance.TakeNewCards();
+        PlayerSystem.Instance.ChangeEnergy(PlayerSystem.Instance.MaxEnergyLimit - PlayerSystem.Instance.GetEnergy());
     }
     
     public void OnClick()

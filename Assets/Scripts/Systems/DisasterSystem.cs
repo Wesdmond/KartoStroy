@@ -2,17 +2,25 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DisasterSystem : MonoBehaviour
+public class DisasterSystem : Singleton<DisasterSystem>
 {
     [SerializeField] private DisasterSO disasterSO;
-    [SerializeField] private int mayorOfficeID = 1; // ID мэрии
-    [SerializeField] private List<int> houseBuildingIDs = new List<int> { 2 }; // ID домов
-    [SerializeField] private float destructionThresholdPercent = 50f; // Процент разрушенных домов для поражения
+    [SerializeField] private int mayorOfficeID = 1;
+    [SerializeField] private List<int> houseBuildingIDs = new List<int> { 2 };
+    [SerializeField] private float destructionThresholdPercent = 50f;
     private List<DisasterData> disasters;
     private List<DisasterData> disastersRandom = new();
     private int forecastDays = 1;
-    private int turnCount = 0; // Счетчик ходов
-    private bool gameEnded = false; // Флаг окончания игры
+    private int turnCount = 0;
+    private bool gameEnded = false;
+    private bool isBloodMoonActive = false;
+    private int lastBloodMoonTurn = -1;
+    private bool isZagarskAwakeningActive = false;
+    private int lastZagarskAwakeningTurn = -1;
+    private const int MAX_DISASTER_TURNS = 3;
+
+    public bool IsBloodMoonActive => isBloodMoonActive;
+    public bool IsZagarskAwakeningActive => isZagarskAwakeningActive;
 
     void Start()
     {
@@ -29,7 +37,6 @@ public class DisasterSystem : MonoBehaviour
             int random = Random.Range(0, disasters.Count);
             disastersRandom.Add(disasters[random]);
             disasters.RemoveAt(random);
-            return;
         }
         disasters = new(disasterSO.disasterData);
     }
@@ -48,7 +55,8 @@ public class DisasterSystem : MonoBehaviour
     {
         if (gameEnded) yield break;
 
-        Debug.Log($"Disaster Turn: Turn {++turnCount}");
+        turnCount++;
+        Debug.Log($"Disaster Turn: Turn {turnCount}");
 
         // Проверяем условие победы
         if (turnCount >= 7)
@@ -57,7 +65,7 @@ public class DisasterSystem : MonoBehaviour
             yield break;
         }
 
-        // Получаем состояние зданий до выполнения катастроф
+        // Получаем состояние зданий до катастроф
         BuildingSystem buildingSystem = BuildingSystem.Instance;
         if (buildingSystem == null)
         {
@@ -74,7 +82,7 @@ public class DisasterSystem : MonoBehaviour
                 initialHouseCount++;
             }
         }
-        
+
         Debug.Log("Disaster Turn: Starting effect processing");
         yield return new WaitForSeconds(2f);
         if (disastersRandom == null)
@@ -82,21 +90,21 @@ public class DisasterSystem : MonoBehaviour
             Debug.LogError("DisasterSystem: disastersRandom is null");
             yield break;
         }
-        
-        // foreach (DisasterData disaster in disastersRandom)
-        // {
-        //     if (!disaster.isMajor)
-        //     {
-        //         bool prevented = false; // Логика святилища
-        //         if (prevented) continue;
-        //     }
-        //
-        //     foreach (EffectSO effect in disaster.effects)
-        //     {
-        //         Debug.Log($"Performing disaster effect: {effect.name}");
-        //         yield return effect.Perform();
-        //     }
-        // }
+
+        foreach (DisasterData disaster in disastersRandom)
+        {
+            if (!disaster.isMajor)
+            {
+                bool prevented = false;
+                if (prevented) continue;
+            }
+
+            foreach (EffectSO effect in disaster.effects)
+            {
+                Debug.Log($"Performing disaster effect: {effect.name}");
+                yield return effect.Perform();
+            }
+        }
 
         Debug.Log("End Disaster Turn");
 
@@ -134,6 +142,19 @@ public class DisasterSystem : MonoBehaviour
             EndGame(false, $"{destructionPercent:F1}% of houses destroyed in one turn");
             yield break;
         }
+
+        // Проверяем длительность катастроф
+        if (isBloodMoonActive && turnCount >= lastBloodMoonTurn + MAX_DISASTER_TURNS)
+        {
+            SetBloodMoonActive(false);
+            Debug.Log("DisasterSystem: Blood Moon deactivated due to turn limit");
+        }
+
+        if (isZagarskAwakeningActive && turnCount >= lastZagarskAwakeningTurn + MAX_DISASTER_TURNS)
+        {
+            EndGame(false, "Zagarsk Awakening completed");
+            yield break;
+        }
     }
 
     public void PreventNonMajorDisaster()
@@ -164,6 +185,20 @@ public class DisasterSystem : MonoBehaviour
                 Debug.Log("DisasterSystem: Disaster replaced");
             }
         }
+    }
+
+    public void SetBloodMoonActive(bool active)
+    {
+        isBloodMoonActive = active;
+        lastBloodMoonTurn = active ? turnCount : -1;
+        Debug.Log($"DisasterSystem: Blood Moon {(active ? $"activated on turn {turnCount}" : "deactivated")}");
+    }
+
+    public void SetZagarskAwakeningActive(bool active)
+    {
+        isZagarskAwakeningActive = active;
+        lastZagarskAwakeningTurn = active ? turnCount : -1;
+        Debug.Log($"DisasterSystem: Zagarsk Awakening {(active ? $"activated on turn {turnCount}" : "deactivated")}");
     }
 
     private void EndGame(bool isVictory, string reason = "")

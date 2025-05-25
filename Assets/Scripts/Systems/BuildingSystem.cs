@@ -8,6 +8,7 @@ public class BuildingSystem : Singleton<BuildingSystem>
     [SerializeField] private GridData furnitureData;
     [SerializeField] private int furryCampBuildingID = 4;
     [SerializeField] private int randomPortalBuildingID = 5;
+    [SerializeField] private int sanctuaryBuildingID = 6; 
 
     private bool isBloodMoonActive = false;
     private bool isZagarskAwakeningActive = false;
@@ -135,6 +136,11 @@ public class BuildingSystem : Singleton<BuildingSystem>
     public bool IsRandomPortal(int objectID)
     {
         return objectID == randomPortalBuildingID;
+    }
+    
+    public bool IsSanctuary(int objectID)
+    {
+        return objectID == sanctuaryBuildingID;
     }
 
     public List<int> GetNeighborBuildingIDs(Vector3Int gridPosition)

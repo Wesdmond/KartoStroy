@@ -4,39 +4,20 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "Effects/ZagarskAwakeningEffect")]
 public class ZagarskAwakeningEffect : EffectSO
 {
-    [SerializeField] private int maxTurns = 3;
-    private BuildingSystem buildingSystem;
+    private DisasterSystem disasterSystem;
+    
 
     public override IEnumerator Perform()
     {
-        buildingSystem = BuildingSystem.Instance;
-        if (buildingSystem == null)
+        disasterSystem = DisasterSystem.Instance;
+        if (disasterSystem == null)
         {
-            Debug.LogError($"ZagarskAwakeningEffect ({name}): BuildingSystem is null");
+            Debug.LogError($"ZagarskAwakeningEffect ({name}): DisasterSystem is null");
             yield break;
         }
 
         Debug.Log("ZagarskAwakeningEffect: Activating Zagarsk Awakening");
-        buildingSystem.SetZagarskAwakeningActive(true, maxTurns);
-
-        while (buildingSystem.IsZagarskAwakeningActive && buildingSystem.ZagarskTurnsRemaining > 0)
-        {
-            yield return WaitForBuildingTurn();
-        }
-
-        if (!buildingSystem.IsZagarskAwakeningActive)
-        {
-            Debug.Log("ZagarskAwakeningEffect: Deactivated by player action");
-        }
-    }
-
-    private IEnumerator WaitForBuildingTurn()
-    {
-        bool buildingTurnCompleted = false;
-        ActionSystem.Instance.Perform(new BuildingGA(), () => buildingTurnCompleted = true);
-        while (!buildingTurnCompleted)
-        {
-            yield return null;
-        }
+        disasterSystem.SetZagarskAwakeningActive(true);
+        yield return null;
     }
 }

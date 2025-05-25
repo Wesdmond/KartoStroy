@@ -12,12 +12,14 @@ public class DailyMoneyEffect : EffectSO
     private Vector3Int gridPosition;
     private int objectID;
     private BuildingSystem bonusSystem;
+    private DisasterSystem disasterSystem;
 
     public void SetContext(Vector3Int position, int id, BuildingSystem system)
     {
         gridPosition = position;
         objectID = id;
         bonusSystem = system;
+        disasterSystem = FindObjectOfType<DisasterSystem>();
     }
 
     public override IEnumerator Perform()
@@ -28,7 +30,13 @@ public class DailyMoneyEffect : EffectSO
             yield break;
         }
 
-        if (bonusSystem.IsBloodMoonActive)
+        if (disasterSystem == null)
+        {
+            Debug.LogError("DailyMoneyEffect: DisasterSystem not found");
+            yield break;
+        }
+
+        if (disasterSystem.IsBloodMoonActive)
         {
             Debug.Log($"DailyMoneyEffect: Blocked by Blood Moon for object ID {objectID}");
             yield break;

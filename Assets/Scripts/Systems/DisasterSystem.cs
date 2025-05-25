@@ -26,8 +26,19 @@ public class DisasterSystem : Singleton<DisasterSystem>
 
     void Start()
     {
-        if (disasterSO != null) disasters = new(disasterSO.disasterData);
-        else Debug.LogError("DisasterSystem: disasterSO is null");
+        if (disasterSO != null)
+        {
+            disasters = new(disasterSO.disasterData);
+            Debug.Log($"DisasterSystem: Loaded {disasters.Count} disasters");
+            foreach (var disaster in disasters)
+            {
+                Debug.Log($"Disaster: {disaster.disasterName}, Magnitude: {disaster.magnitude}, IsMajor: {disaster.isMajor}");
+            }
+        }
+        else
+        {
+            Debug.LogError("DisasterSystem: disasterSO is null");
+        }
     }
 
     public void Randomize()
@@ -37,6 +48,7 @@ public class DisasterSystem : Singleton<DisasterSystem>
         if (disasters == null || disasters.Count == 0)
         {
             Debug.LogWarning("DisasterSystem: No disasters available to randomize");
+            NotifyUIAboutDisaster(null);
             return;
         }
 
@@ -80,7 +92,7 @@ public class DisasterSystem : Singleton<DisasterSystem>
             }
         }
 
-        // Если выбор не произошел (на случай ошибок округления), ничего не выбираем
+        // Если выбор не произошел (на случай ошибок округления)
         Debug.LogWarning("DisasterSystem: No disaster selected due to weight calculation error");
         NotifyUIAboutDisaster(null);
     }
@@ -101,6 +113,13 @@ public class DisasterSystem : Singleton<DisasterSystem>
 
         turnCount++;
         Debug.Log($"Disaster Turn: Turn {turnCount}");
+
+        // Проверяем длительность ZagarskAwakening (приоритет над победой)
+        if (isZagarskAwakeningActive && turnCount >= lastZagarskAwakeningTurn + MAX_DISASTER_TURNS)
+        {
+            EndGame(false, "Zagarsk Awakening completed");
+            yield break;
+        }
 
         // Проверяем условие победы
         if (turnCount >= gameEndTurn)
@@ -135,6 +154,7 @@ public class DisasterSystem : Singleton<DisasterSystem>
         if (disastersRandom == null)
         {
             Debug.LogError("DisasterSystem: disastersRandom is null");
+            disastersRandom = new List<DisasterData>();
             yield break;
         }
 
@@ -203,17 +223,11 @@ public class DisasterSystem : Singleton<DisasterSystem>
             yield break;
         }
 
-        // Проверяем длительность катастроф
+        // Проверяем длительность BloodMoon
         if (isBloodMoonActive && turnCount >= lastBloodMoonTurn + MAX_DISASTER_TURNS)
         {
             SetBloodMoonActive(false);
             Debug.Log("DisasterSystem: Blood Moon deactivated due to turn limit");
-        }
-
-        if (isZagarskAwakeningActive && turnCount >= lastZagarskAwakeningTurn + MAX_DISASTER_TURNS)
-        {
-            EndGame(false, "Zagarsk Awakening completed");
-            yield break;
         }
     }
 
@@ -265,8 +279,6 @@ public class DisasterSystem : Singleton<DisasterSystem>
             DisasterViewer.Instance.ChangeSprite(disaster);
             Debug.Log($"DisasterSystem: UI notified - New disaster: {disaster.disasterName} (Type: {disaster.type}, Level: {disaster.level}, Magnitude: {disaster.magnitude})");
         }
-        // TODO: Реализовать уведомление UI
-        // Например: UIManager.Instance.ShowDisasterNotification(disaster?.disasterName ?? "No Disaster", disaster?.description);
     }
 
     private void EndGame(bool isVictory, string reason = "")
@@ -275,14 +287,12 @@ public class DisasterSystem : Singleton<DisasterSystem>
         if (isVictory)
         {
             GameEnderHandler.Instance.ShowGood();
-            Debug.Log("DisasterSystem: Victory! Survived 7 turns");
+            Debug.Log("DisasterSystem: Victory! Survived 5 turns");
         }
         else
         {
             GameEnderHandler.Instance.ShowBad();
             Debug.Log($"DisasterSystem: Game Over! Reason: {reason}");
         }
-        // Реализуйте логику завершения игры, например, вызов UI или GameManager
-        // GameManager.Instance.EndGame(isVictory);
     }
 }

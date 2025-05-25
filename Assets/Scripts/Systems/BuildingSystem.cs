@@ -81,7 +81,6 @@ public class BuildingSystem : Singleton<BuildingSystem>
             Debug.Log($"Found {objectData.bonuses.Count} bonuses for building {objectData.Name}");
             foreach (var bonus in objectData.bonuses)
             {
-                print("test2");
                 if (bonus is DailyMoneyEffect dailyMoney)
                 {
                     dailyMoney.SetContext(placedObject.occupiedPositions[0], objectID, this);

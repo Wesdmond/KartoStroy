@@ -14,7 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <Title>k__BackingField: "\u0421\u0442\u0440\u0430\u043D\u0441\u0442\u0432\u0443\u044E\u0449\u0430\u044F
     \u0433\u0430\u0434\u0430\u043B\u043A\u0430"
-  <Description>k__BackingField: 
+  <Description>k__BackingField: "\u041F\u043E\u043A\u0430\u0437\u044B\u0432\u0430\u0435\u0442
+    \u0431\u0435\u0434\u0441\u0442\u0432\u0438\u044F + \u043D\u0430 N \u0434\u043D\u0435\u0439
+    \u0432\u043F\u0435\u0440\u0435\u0434"
   <Energy>k__BackingField: 1
   <ShopPrice>k__BackingField: 0
   <Sprite>k__BackingField: {fileID: 21300000, guid: 656b6bd8b1d5c61448c68a8a60c0fc29, type: 3}

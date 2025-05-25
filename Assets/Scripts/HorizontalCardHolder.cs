@@ -152,7 +152,7 @@ public class HorizontalCardHolder : MonoBehaviour
             }
             else
             {
-                ShowCards();
+                StartCoroutine(ShowCards());
             }
             test = !test;
         }

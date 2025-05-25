@@ -37,8 +37,8 @@ public class PlacementSystem : Singleton<PlacementSystem>
 
     IBuildingState buildingState;
 
-    [SerializeField]
-    private SoundFeedback soundFeedback;
+    [SerializeField] private SoundFeedback soundFeedback;
+    [SerializeField] private HorizontalCardHolder cardHolder;
     
     private Camera mainCamera;
 
@@ -54,6 +54,7 @@ public class PlacementSystem : Singleton<PlacementSystem>
     {
         StopPlacement();
         gridVisualization.SetActive(true);
+        cardHolder.HideCards();
         buildingState = new PlacementState(ID,
                                            grid,
                                            preview,
@@ -85,6 +86,7 @@ public class PlacementSystem : Singleton<PlacementSystem>
         Vector3 mousePosition = inputManager.GetSelectedMapPosition();
         Vector3Int gridPosition = grid.WorldToCell(mousePosition);
         buildingState.OnAction(gridPosition);
+        StartCoroutine(cardHolder.ShowCards());
     }
 
     private void StopPlacement()

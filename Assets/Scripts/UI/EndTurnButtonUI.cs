@@ -38,7 +38,7 @@ public class EndTurnButtonUI : MonoBehaviour
     private IEnumerator StartPlayerTurn()
     {
         yield return PlayerSystem.Instance.ShowCards();
-        PlayerSystem.Instance.TakeNewCards();
+        yield return PlayerSystem.Instance.TakeNewCards();
         PlayerSystem.Instance.ChangeEnergy(PlayerSystem.Instance.MaxEnergyLimit - PlayerSystem.Instance.GetEnergy());
     }
     

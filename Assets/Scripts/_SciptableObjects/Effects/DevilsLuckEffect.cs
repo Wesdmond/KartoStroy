@@ -17,6 +17,7 @@ public class DevilsLuckEffect : EffectSO
         }
 
         Debug.Log("DevilsLuckEffect: Cancelling all active disasters");
+        DisasterViewer.Instance.ChangeSprite(null);
         disasterSystem.SetBloodMoonActive(false);
         disasterSystem.SetZagarskAwakeningActive(false);
         yield return null;

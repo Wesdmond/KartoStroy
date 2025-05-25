@@ -8,6 +8,8 @@ public class DisasterSystem : Singleton<DisasterSystem>
     [SerializeField] private int mayorOfficeID = 1;
     [SerializeField] private List<int> houseBuildingIDs = new List<int> { 2 };
     [SerializeField] private float destructionThresholdPercent = 50f;
+    [SerializeField] private float noDisasterChance = 20f; // Шанс отсутствия бедствия (в процентах, 0-100)
+    [SerializeField] private int gameEndTurn = 5;
     private List<DisasterData> disasters;
     private List<DisasterData> disastersRandom = new();
     private int forecastDays = 1;
@@ -26,19 +28,61 @@ public class DisasterSystem : Singleton<DisasterSystem>
     {
         if (disasterSO != null) disasters = new(disasterSO.disasterData);
         else Debug.LogError("DisasterSystem: disasterSO is null");
-        Randomize();
     }
 
     public void Randomize()
     {
-        int counter = disasters.Count;
-        for (int i = 0; i < counter; ++i)
+        disastersRandom.Clear(); // Очищаем список для нового хода
+
+        if (disasters == null || disasters.Count == 0)
         {
-            int random = Random.Range(0, disasters.Count);
-            disastersRandom.Add(disasters[random]);
-            disasters.RemoveAt(random);
+            Debug.LogWarning("DisasterSystem: No disasters available to randomize");
+            return;
         }
-        disasters = new(disasterSO.disasterData);
+
+        // Суммируем веса всех бедствий (magnitude) и добавляем шанс отсутствия бедствия
+        float totalWeight = noDisasterChance / 100f; // Переводим процент в диапазон 0-1
+        foreach (var disaster in disasters)
+        {
+            totalWeight += disaster.magnitude;
+        }
+
+        if (totalWeight <= 0f)
+        {
+            Debug.Log("DisasterSystem: No disaster selected (total weight is 0)");
+            NotifyUIAboutDisaster(null);
+            return;
+        }
+
+        // Взвешенный случайный выбор
+        float randomValue = Random.Range(0f, totalWeight);
+        float cumulativeWeight = 0f;
+
+        // Проверяем шанс отсутствия бедствия
+        cumulativeWeight += noDisasterChance / 100f;
+        if (randomValue <= cumulativeWeight)
+        {
+            Debug.Log("DisasterSystem: No disaster selected for this turn");
+            NotifyUIAboutDisaster(null);
+            return;
+        }
+
+        // Выбираем бедствие на основе magnitude
+        foreach (var disaster in disasters)
+        {
+            cumulativeWeight += disaster.magnitude;
+            if (randomValue <= cumulativeWeight)
+            {
+                disastersRandom.Add(disaster);
+                Debug.Log($"DisasterSystem: Selected disaster '{disaster.disasterName}' with magnitude {disaster.magnitude}");
+                NotifyUIAboutDisaster(disaster);
+                return;
+            }
+        }
+
+        // Если выбор не произошел (на случай ошибок округления), ничего не выбираем
+        Debug.LogWarning("DisasterSystem: No disaster selected due to weight calculation error");
+        NotifyUIAboutDisaster(null);
     }
 
     void OnEnable()
@@ -59,11 +103,14 @@ public class DisasterSystem : Singleton<DisasterSystem>
         Debug.Log($"Disaster Turn: Turn {turnCount}");
 
         // Проверяем условие победы
-        if (turnCount >= 7)
+        if (turnCount >= gameEndTurn)
         {
             EndGame(true);
             yield break;
         }
+
+        // Выбираем новое бедствие для этого хода
+        Randomize();
 
         // Получаем состояние зданий до катастроф
         BuildingSystem buildingSystem = BuildingSystem.Instance;
@@ -91,19 +138,32 @@ public class DisasterSystem : Singleton<DisasterSystem>
             yield break;
         }
 
-        foreach (DisasterData disaster in disastersRandom)
+        // Обрабатываем выбранное бедствие (если есть)
+        if (disastersRandom.Count > 0)
         {
+            DisasterData disaster = disastersRandom[0];
             if (!disaster.isMajor)
             {
-                bool prevented = false;
-                if (prevented) continue;
+                bool prevented = false; // Логика предотвращения (например, через SanctuaryEffect)
+                if (prevented)
+                {
+                    Debug.Log($"DisasterSystem: Non-major disaster '{disaster.disasterName}' prevented");
+                    disastersRandom.Clear();
+                }
             }
 
-            foreach (EffectSO effect in disaster.effects)
+            if (disastersRandom.Count > 0) // Проверяем, не было ли предотвращено
             {
-                Debug.Log($"Performing disaster effect: {effect.name}");
-                yield return effect.Perform();
+                foreach (EffectSO effect in disaster.effects)
+                {
+                    Debug.Log($"Performing disaster effect: {effect.name}");
+                    yield return effect.Perform();
+                }
             }
+        }
+        else
+        {
+            Debug.Log("DisasterSystem: No disaster effects to perform this turn");
         }
 
         Debug.Log("End Disaster Turn");
@@ -161,8 +221,8 @@ public class DisasterSystem : Singleton<DisasterSystem>
     {
         if (disastersRandom.Count > 0 && !disastersRandom[0].isMajor)
         {
-            disastersRandom.RemoveAt(0);
-            Debug.Log("DisasterSystem: Non-major disaster prevented");
+            Debug.Log($"DisasterSystem: Non-major disaster '{disastersRandom[0].disasterName}' prevented");
+            disastersRandom.Clear();
         }
     }
 
@@ -174,17 +234,9 @@ public class DisasterSystem : Singleton<DisasterSystem>
 
     public void ReplaceDisaster()
     {
-        if (disastersRandom.Count > 0)
-        {
-            disastersRandom.RemoveAt(0);
-            if (disasters.Count > 0)
-            {
-                int random = Random.Range(0, disasters.Count);
-                disastersRandom.Insert(0, disasters[random]);
-                disasters.RemoveAt(random);
-                Debug.Log("DisasterSystem: Disaster replaced");
-            }
-        }
+        disastersRandom.Clear(); // Очищаем текущее бедствие
+        Randomize(); // Выбираем новое
+        Debug.Log("DisasterSystem: Disaster replaced");
     }
 
     public void SetBloodMoonActive(bool active)
@@ -201,15 +253,33 @@ public class DisasterSystem : Singleton<DisasterSystem>
         Debug.Log($"DisasterSystem: Zagarsk Awakening {(active ? $"activated on turn {turnCount}" : "deactivated")}");
     }
 
+    private void NotifyUIAboutDisaster(DisasterData disaster)
+    {
+        if (disaster == null)
+        {
+            DisasterViewer.Instance.ChangeSprite(null);
+            Debug.Log("DisasterSystem: UI notified - No disaster this turn");
+        }
+        else
+        {
+            DisasterViewer.Instance.ChangeSprite(disaster);
+            Debug.Log($"DisasterSystem: UI notified - New disaster: {disaster.disasterName} (Type: {disaster.type}, Level: {disaster.level}, Magnitude: {disaster.magnitude})");
+        }
+        // TODO: Реализовать уведомление UI
+        // Например: UIManager.Instance.ShowDisasterNotification(disaster?.disasterName ?? "No Disaster", disaster?.description);
+    }
+
     private void EndGame(bool isVictory, string reason = "")
     {
         gameEnded = true;
         if (isVictory)
         {
+            GameEnderHandler.Instance.ShowGood();
             Debug.Log("DisasterSystem: Victory! Survived 7 turns");
         }
         else
         {
+            GameEnderHandler.Instance.ShowBad();
             Debug.Log($"DisasterSystem: Game Over! Reason: {reason}");
         }
         // Реализуйте логику завершения игры, например, вызов UI или GameManager

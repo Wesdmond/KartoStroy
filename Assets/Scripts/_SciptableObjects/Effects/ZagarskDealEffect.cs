@@ -20,6 +20,7 @@ public class ZagarskDealEffect : EffectSO
         {
             Debug.Log("ZagarskDealEffect: Cancelling Zagarsk Awakening");
             disasterSystem.SetZagarskAwakeningActive(false);
+            DisasterViewer.Instance.ChangeSprite(null);
         }
         else
         {

@@ -24,6 +24,7 @@ public class DisasterData
     [field: SerializeField] public string description;
     [field: SerializeField] public bool isMajor { get; private set; } // Масштабная ли катастрофа
     [field: SerializeField] public List<EffectSO> effects;
+    [field: SerializeField] public Sprite Icon;
 }
 
 /* Нужно добавить в эффектах
